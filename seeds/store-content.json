@@ -1,0 +1,688 @@
+{
+  "exportedBy": "scripts/export-content.mjs",
+  "exportedAt": "2026-10-17T20:28:13.799Z",
+  "store": {
+    "storeName": "VELUNORA",
+    "storeNameEn": "VELUNORA",
+    "tagline": "عطور فاخرة تُروى بالتفاصيل",
+    "taglineEn": "Luxury fragrances told in detail",
+    "logoUrl": "/brand/logo.svg",
+    "faviconUrl": "/brand/logo.svg",
+    "colors": {
+      "primary": "#2d1b4e",
+      "primarySoft": "#4a2f7a",
+      "gold": "#c6a15b",
+      "cream": "#f7f1e7",
+      "background": "#fcfaf6",
+      "text": "#241238"
+    },
+    "headingFont": "Cairo",
+    "bodyFont": "Cairo",
+    "currency": "SAR",
+    "currencySymbol": "ر.س",
+    "taxEnabled": false,
+    "taxRate": 15,
+    "shippingFee": 25,
+    "freeShippingOver": 300,
+    "minOrder": 0,
+    "ordersEnabled": true,
+    "reviewsEnabled": true,
+    "contact": {
+      "phone": "0583236686",
+      "email": "ahmedatefshouman00@gmail.com",
+      "address": "الرياض",
+      "addressEn": "",
+      "workingHours": "السبت – الخميس: 10 صباحًا – 10 مساءً"
+    },
+    "social": {
+      "instagram": "",
+      "tiktok": "",
+      "snapchat": "",
+      "facebook": "",
+      "x": ""
+    },
+    "announcement": "",
+    "announcementEn": "",
+    "seoTitle": "VELUNORA — متجر عطور فاخرة",
+    "seoDescription": "VELUNORA — متجر عطور فاخر: عطور رجالية ونسائية ويونيسكس بأجود التركيزات، مع توصيل سريع داخل المملكة.",
+    "seoKeywords": "عطور, متجر عطور, عطور فاخرة, VELUNORA, برفان, عطور رجالية, عطور نسائية"
+  },
+  "home": {
+    "heroTitle": "عطور تُشبه حضورك",
+    "heroTitleEn": "Fragrances as presence",
+    "heroSubtitle": "تركيزات عالية، مكوّنات مختارة، وتجربة فاخرة من أول رشّة حتى آخر أثر.",
+    "heroSubtitleEn": "High concentrations, carefully chosen ingredients, a luxurious experience from first spray to lasting trail.",
+    "heroButtonText": "تسوّق المجموعة",
+    "heroButtonTextEn": "Shop the collection",
+    "heroButtonHref": "/products",
+    "heroImage": "/brand/photos/hero-night.webp",
+    "banners": [
+      {
+        "id": "bn-luxury",
+        "image": "/brand/photos/banner-noir.webp",
+        "title": "مجموعة الفخامة الليلية",
+        "titleEn": "The Midnight Luxury Collection",
+        "subtitle": "عود، مسك، وعنبر بتركيزات عالية تدوم طويلًا.",
+        "subtitleEn": "Oud, musk and amber in high concentrations that last.",
+        "buttonText": "اكتشف المجموعة",
+        "buttonTextEn": "Discover the collection",
+        "buttonHref": "/products?sort=featured",
+        "active": true
+      },
+      {
+        "id": "bn-gift",
+        "image": "/brand/photos/rose-night.webp",
+        "title": "هدية تُشبه صاحبتها",
+        "titleEn": "A gift that feels like her",
+        "subtitle": "تغليف فاخر وبطاقة إهداء مع كل طلب.",
+        "subtitleEn": "Luxury wrapping and a gift card with every order.",
+        "buttonText": "تسوّق الهدايا",
+        "buttonTextEn": "Shop gifting",
+        "buttonHref": "/products?tag=new",
+        "active": true
+      }
+    ],
+    "sections": [
+      {
+        "id": "sec-categories",
+        "type": "categories",
+        "title": "تصفح الأقسام",
+        "titleEn": "Browse categories",
+        "limit": 6,
+        "productIds": [],
+        "image": "",
+        "active": true,
+        "order": 1
+      },
+      {
+        "id": "sec-banner",
+        "type": "banner",
+        "title": "مجموعة الفخامة الليلية",
+        "titleEn": "The Midnight Luxury Collection",
+        "limit": 0,
+        "productIds": [],
+        "image": "/brand/photos/banner-noir.webp",
+        "active": true,
+        "order": 2
+      },
+      {
+        "id": "sec-featured",
+        "type": "featured",
+        "title": "مختارات الفخامة",
+        "titleEn": "Curated luxury",
+        "limit": 8,
+        "productIds": [],
+        "image": "",
+        "active": true,
+        "order": 3
+      },
+      {
+        "id": "sec-new",
+        "type": "new",
+        "title": "وصل حديثًا",
+        "titleEn": "New arrivals",
+        "limit": 8,
+        "productIds": [],
+        "image": "",
+        "active": true,
+        "order": 4
+      },
+      {
+        "id": "sec-sale",
+        "type": "sale",
+        "title": "عروض وخصومات",
+        "titleEn": "Offers & deals",
+        "limit": 8,
+        "productIds": [],
+        "image": "",
+        "active": true,
+        "order": 6
+      },
+      {
+        "id": "sec-banner-gift",
+        "type": "banner",
+        "title": "هدية تُشبه صاحبتها",
+        "titleEn": "A gift that feels like her",
+        "limit": 0,
+        "productIds": [],
+        "image": "/brand/photos/rose-night.webp",
+        "active": true,
+        "order": 5
+      }
+    ]
+  },
+  "categories": [
+    {
+      "id": "men",
+      "slug": "men",
+      "name": "عطور رجالية",
+      "nameEn": "Men",
+      "order": 1,
+      "active": true
+    },
+    {
+      "id": "women",
+      "slug": "women",
+      "name": "عطور نسائية",
+      "nameEn": "Women",
+      "order": 2,
+      "active": true
+    },
+    {
+      "id": "unisex",
+      "slug": "unisex",
+      "name": "يونيسكس",
+      "nameEn": "Unisex",
+      "order": 3,
+      "active": true
+    }
+  ],
+  "products": [
+    {
+      "id": "prd_royal-night-oud",
+      "slug": "royal-night-oud",
+      "name": "عود الليل الملكي",
+      "nameEn": "Royal Night Oud",
+      "description": "عود كمبودي فاخر بلمسة من العنبر والمسك، يمنح حضورًا دافئًا يدوم طويلًا.",
+      "descriptionEn": "A luxurious Cambodian oud with amber and musk, warm and long lasting.",
+      "category": "men",
+      "images": [
+        "/brand/products/royal-night-oud.webp"
+      ],
+      "price": 420,
+      "compareAtPrice": 520,
+      "variants": [
+        {
+          "id": "royal-night-oud-30ml",
+          "label": "30 مل",
+          "labelEn": "30 ml",
+          "price": 260.4,
+          "compareAtPrice": 322.4,
+          "stock": 25
+        },
+        {
+          "id": "royal-night-oud-50ml",
+          "label": "50 مل",
+          "labelEn": "50 ml",
+          "price": 344.4,
+          "compareAtPrice": 426.4,
+          "stock": 18
+        },
+        {
+          "id": "royal-night-oud-100ml",
+          "label": "100 مل",
+          "labelEn": "100 ml",
+          "price": 420,
+          "compareAtPrice": 520,
+          "stock": 22
+        }
+      ],
+      "options": [
+        {
+          "label": "التركيز",
+          "labelEn": "Concentration",
+          "values": [
+            "Eau de Parfum",
+            "Eau de Toilette"
+          ]
+        }
+      ],
+      "stock": 65,
+      "featured": true,
+      "active": true,
+      "order": 1,
+      "isNew": false,
+      "onSale": true,
+      "createdAt": 1792143237432,
+      "updatedAt": 1792233363405
+    },
+    {
+      "id": "prd_silk-jasmine",
+      "slug": "silk-jasmine",
+      "name": "ياسمين الحرير",
+      "nameEn": "Silk Jasmine",
+      "description": "ياسمين نقي مع زهر البرتقال والفانيلا، أنثوي ناعم يناسب المناسبات.",
+      "descriptionEn": "Pure jasmine with orange blossom and vanilla, soft and feminine.",
+      "category": "women",
+      "images": [
+        "/brand/products/silk-jasmine.webp"
+      ],
+      "price": 360,
+      "compareAtPrice": null,
+      "variants": [
+        {
+          "id": "silk-jasmine-30ml",
+          "label": "30 مل",
+          "labelEn": "30 ml",
+          "price": 223.2,
+          "compareAtPrice": null,
+          "stock": 21
+        },
+        {
+          "id": "silk-jasmine-50ml",
+          "label": "50 مل",
+          "labelEn": "50 ml",
+          "price": 295.2,
+          "compareAtPrice": null,
+          "stock": 24
+        },
+        {
+          "id": "silk-jasmine-100ml",
+          "label": "100 مل",
+          "labelEn": "100 ml",
+          "price": 360,
+          "compareAtPrice": null,
+          "stock": 25
+        }
+      ],
+      "options": [
+        {
+          "label": "التركيز",
+          "labelEn": "Concentration",
+          "values": [
+            "Eau de Parfum",
+            "Eau de Toilette"
+          ]
+        }
+      ],
+      "stock": 70,
+      "featured": true,
+      "active": true,
+      "order": 2,
+      "isNew": true,
+      "onSale": false,
+      "createdAt": 1792143236518,
+      "updatedAt": 1792152080356
+    },
+    {
+      "id": "prd_sunset-musk",
+      "slug": "sunset-musk",
+      "name": "مسك الغروب",
+      "nameEn": "Sunset Musk",
+      "description": "مسك أبيض مع أخشاب الصندل والباتشولي، عطر يونيسكس متوازن.",
+      "descriptionEn": "White musk with sandalwood and patchouli, a balanced unisex scent.",
+      "category": "unisex",
+      "images": [
+        "/brand/products/sunset-musk.webp"
+      ],
+      "price": 300,
+      "compareAtPrice": 380,
+      "variants": [
+        {
+          "id": "sunset-musk-30ml",
+          "label": "30 مل",
+          "labelEn": "30 ml",
+          "price": 186,
+          "compareAtPrice": 235.6,
+          "stock": 25
+        },
+        {
+          "id": "sunset-musk-50ml",
+          "label": "50 مل",
+          "labelEn": "50 ml",
+          "price": 246,
+          "compareAtPrice": 311.6,
+          "stock": 25
+        },
+        {
+          "id": "sunset-musk-100ml",
+          "label": "100 مل",
+          "labelEn": "100 ml",
+          "price": 300,
+          "compareAtPrice": 380,
+          "stock": 25
+        }
+      ],
+      "options": [
+        {
+          "label": "التركيز",
+          "labelEn": "Concentration",
+          "values": [
+            "Eau de Parfum",
+            "Eau de Toilette"
+          ]
+        }
+      ],
+      "stock": 75,
+      "featured": true,
+      "active": true,
+      "order": 3,
+      "isNew": false,
+      "onSale": true,
+      "createdAt": 1792143235606,
+      "updatedAt": 1792143235606
+    },
+    {
+      "id": "prd_dawn-dew",
+      "slug": "dawn-dew",
+      "name": "ندى الفجر",
+      "nameEn": "Dawn Dew",
+      "description": "حمضيات منعشة مع النيرولي والمسك، خفيف ومناسب للنهار.",
+      "descriptionEn": "Fresh citrus with neroli and musk, light and perfect for daytime.",
+      "category": "unisex",
+      "images": [
+        "/brand/products/dawn-dew.webp"
+      ],
+      "price": 275,
+      "compareAtPrice": null,
+      "variants": [
+        {
+          "id": "dawn-dew-30ml",
+          "label": "30 مل",
+          "labelEn": "30 ml",
+          "price": 170.5,
+          "compareAtPrice": null,
+          "stock": 25
+        },
+        {
+          "id": "dawn-dew-50ml",
+          "label": "50 مل",
+          "labelEn": "50 ml",
+          "price": 225.5,
+          "compareAtPrice": null,
+          "stock": 25
+        },
+        {
+          "id": "dawn-dew-100ml",
+          "label": "100 مل",
+          "labelEn": "100 ml",
+          "price": 275,
+          "compareAtPrice": null,
+          "stock": 25
+        }
+      ],
+      "options": [
+        {
+          "label": "التركيز",
+          "labelEn": "Concentration",
+          "values": [
+            "Eau de Parfum",
+            "Eau de Toilette"
+          ]
+        }
+      ],
+      "stock": 75,
+      "featured": false,
+      "active": true,
+      "order": 4,
+      "isNew": true,
+      "onSale": false,
+      "createdAt": 1792143234697,
+      "updatedAt": 1792143234697
+    },
+    {
+      "id": "prd_sultan-amber",
+      "slug": "sultan-amber",
+      "name": "عنبر السلطان",
+      "nameEn": "Sultan Amber",
+      "description": "عنبر شرقي غني مع التوابل والجلد، عطر رجالي جذاب للمساء.",
+      "descriptionEn": "Rich oriental amber with spices and leather, an alluring evening scent.",
+      "category": "men",
+      "images": [
+        "/brand/products/sultan-amber.webp"
+      ],
+      "price": 480,
+      "compareAtPrice": null,
+      "variants": [
+        {
+          "id": "sultan-amber-30ml",
+          "label": "30 مل",
+          "labelEn": "30 ml",
+          "price": 297.6,
+          "compareAtPrice": null,
+          "stock": 25
+        },
+        {
+          "id": "sultan-amber-50ml",
+          "label": "50 مل",
+          "labelEn": "50 ml",
+          "price": 393.6,
+          "compareAtPrice": null,
+          "stock": 25
+        },
+        {
+          "id": "sultan-amber-100ml",
+          "label": "100 مل",
+          "labelEn": "100 ml",
+          "price": 480,
+          "compareAtPrice": null,
+          "stock": 25
+        }
+      ],
+      "options": [
+        {
+          "label": "التركيز",
+          "labelEn": "Concentration",
+          "values": [
+            "Eau de Parfum",
+            "Eau de Toilette"
+          ]
+        }
+      ],
+      "stock": 75,
+      "featured": true,
+      "active": true,
+      "order": 5,
+      "isNew": false,
+      "onSale": false,
+      "createdAt": 1792143233782,
+      "updatedAt": 1792143233782
+    },
+    {
+      "id": "prd_damask-rose",
+      "slug": "damask-rose",
+      "name": "ورد دمشقي",
+      "nameEn": "Damask Rose",
+      "description": "ورد دمشقي أصيل مع العود الخفيف والمسك، كلاسيكي فاخر.",
+      "descriptionEn": "Authentic Damask rose with light oud and musk, a classic luxury.",
+      "category": "women",
+      "images": [
+        "/brand/products/damask-rose.webp"
+      ],
+      "price": 540,
+      "compareAtPrice": 640,
+      "variants": [
+        {
+          "id": "damask-rose-30ml",
+          "label": "30 مل",
+          "labelEn": "30 ml",
+          "price": 334.8,
+          "compareAtPrice": 396.8,
+          "stock": 23
+        },
+        {
+          "id": "damask-rose-50ml",
+          "label": "50 مل",
+          "labelEn": "50 ml",
+          "price": 442.8,
+          "compareAtPrice": 524.8,
+          "stock": 25
+        },
+        {
+          "id": "damask-rose-100ml",
+          "label": "100 مل",
+          "labelEn": "100 ml",
+          "price": 540,
+          "compareAtPrice": 640,
+          "stock": 25
+        }
+      ],
+      "options": [
+        {
+          "label": "التركيز",
+          "labelEn": "Concentration",
+          "values": [
+            "Eau de Parfum",
+            "Eau de Toilette"
+          ]
+        }
+      ],
+      "stock": 73,
+      "featured": true,
+      "active": true,
+      "order": 6,
+      "isNew": false,
+      "onSale": true,
+      "createdAt": 1792143232867,
+      "updatedAt": 1792151689192
+    },
+    {
+      "id": "prd_amber-bakhoor",
+      "slug": "amber-bakhoor",
+      "name": "بخور العنبر",
+      "nameEn": "Amber Bakhoor",
+      "description": "مزيج بخوري دافئ من العنبر والراتنجات، مثالي للأجواء الشتوية.",
+      "descriptionEn": "A warm bakhoor blend of amber and resins, ideal for winter.",
+      "category": "unisex",
+      "images": [
+        "/brand/products/amber-bakhoor.webp"
+      ],
+      "price": 320,
+      "compareAtPrice": null,
+      "variants": [
+        {
+          "id": "amber-bakhoor-30ml",
+          "label": "30 مل",
+          "labelEn": "30 ml",
+          "price": 198.4,
+          "compareAtPrice": null,
+          "stock": 25
+        },
+        {
+          "id": "amber-bakhoor-50ml",
+          "label": "50 مل",
+          "labelEn": "50 ml",
+          "price": 262.4,
+          "compareAtPrice": null,
+          "stock": 25
+        },
+        {
+          "id": "amber-bakhoor-100ml",
+          "label": "100 مل",
+          "labelEn": "100 ml",
+          "price": 320,
+          "compareAtPrice": null,
+          "stock": 25
+        }
+      ],
+      "options": [
+        {
+          "label": "التركيز",
+          "labelEn": "Concentration",
+          "values": [
+            "Eau de Parfum",
+            "Eau de Toilette"
+          ]
+        }
+      ],
+      "stock": 75,
+      "featured": false,
+      "active": true,
+      "order": 7,
+      "isNew": true,
+      "onSale": false,
+      "createdAt": 1792143231948,
+      "updatedAt": 1792143231948
+    },
+    {
+      "id": "prd_lavender-bloom",
+      "slug": "lavender-bloom",
+      "name": "زهر اللافندر",
+      "nameEn": "Lavender Bloom",
+      "description": "لافندر هادئ مع الميرمية والأخشاب البيضاء، نقي ومريح.",
+      "descriptionEn": "Calm lavender with sage and white woods, clean and comforting.",
+      "category": "women",
+      "images": [
+        "/brand/products/lavender-bloom.webp"
+      ],
+      "price": 290,
+      "compareAtPrice": 340,
+      "variants": [
+        {
+          "id": "lavender-bloom-30ml",
+          "label": "30 مل",
+          "labelEn": "30 ml",
+          "price": 179.8,
+          "compareAtPrice": 210.8,
+          "stock": 25
+        },
+        {
+          "id": "lavender-bloom-50ml",
+          "label": "50 مل",
+          "labelEn": "50 ml",
+          "price": 237.8,
+          "compareAtPrice": 278.8,
+          "stock": 25
+        },
+        {
+          "id": "lavender-bloom-100ml",
+          "label": "100 مل",
+          "labelEn": "100 ml",
+          "price": 290,
+          "compareAtPrice": 340,
+          "stock": 25
+        }
+      ],
+      "options": [
+        {
+          "label": "التركيز",
+          "labelEn": "Concentration",
+          "values": [
+            "Eau de Parfum",
+            "Eau de Toilette"
+          ]
+        }
+      ],
+      "stock": 75,
+      "featured": false,
+      "active": true,
+      "order": 8,
+      "isNew": false,
+      "onSale": true,
+      "createdAt": 1792143231031,
+      "updatedAt": 1792143231031
+    }
+  ],
+  "pages": [
+    {
+      "slug": "about",
+      "title": "من نحن",
+      "titleEn": "About us",
+      "content": "نحن متجر عطور متخصص يختار تركيباته بعناية لتمنحك تجربة عطرية فاخرة تدوم. نعمل مع موردين موثوقين ونضمن أصالة كل زجاجة.",
+      "contentEn": "We are a specialised fragrance house curating compositions for a luxurious, lasting experience, sourced from trusted partners.",
+      "updatedAt": 1792143209023
+    },
+    {
+      "slug": "privacy",
+      "title": "سياسة الخصوصية",
+      "titleEn": "Privacy policy",
+      "content": "نحفظ بياناتك (الاسم، الجوال، العنوان) لأغراض تنفيذ الطلبات والتواصل فقط، ولا نشاركها مع أي طرف غير مكلف بالتوصيل. لا ننشر بيانات العملاء أو طلباتهم للعامة.",
+      "contentEn": "We store your data (name, phone, address) only to fulfil orders and communicate with you; we never share it beyond delivery partners.",
+      "updatedAt": 1792143209023
+    },
+    {
+      "slug": "terms",
+      "title": "الشروط والأحكام",
+      "titleEn": "Terms & conditions",
+      "content": "بإتمام الطلب فإنك توافق على صحة البيانات المدخلة، ويحق للمتجر تأكيد الطلب هاتفيًا قبل التجهيز. الأسعار المعروضة نهائية وتشمل ما هو موضح في ملخص الطلب.",
+      "contentEn": "By placing an order you confirm the accuracy of the submitted data; the store may confirm by phone before processing.",
+      "updatedAt": 1792143209023
+    },
+    {
+      "slug": "shipping",
+      "title": "سياسة الشحن",
+      "titleEn": "Shipping policy",
+      "content": "يتم تجهيز الطلبات خلال 24 ساعة من التأكيد، ويستغرق التوصيل داخل المدينة 1–2 يوم وفي باقي المناطق 2–4 أيام عمل.",
+      "contentEn": "Orders are prepared within 24 hours of confirmation; delivery takes 1–2 days locally and 2–4 business days nationwide.",
+      "updatedAt": 1792143209023
+    },
+    {
+      "slug": "returns",
+      "title": "سياسة الاسترجاع",
+      "titleEn": "Returns policy",
+      "content": "يمكن طلب الاستبدال أو الاسترجاع خلال 3 أيام من الاستلام بشرط أن يكون المنتج مغلقًا وبحالته الأصلية، مع إرفاق رقم الطلب.",
+      "contentEn": "Exchange or return can be requested within 3 days of delivery provided the product is sealed and in original condition.",
+      "updatedAt": 1792143209023
+    }
+  ]
+}

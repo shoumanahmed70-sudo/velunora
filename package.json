@@ -12,6 +12,8 @@
     "seed": "node scripts/seed.mjs",
     "db:backup": "node scripts/backup.mjs",
     "db:restore": "node scripts/restore.mjs",
+    "content:export": "node scripts/export-content.mjs",
+    "content:import": "node scripts/import-content.mjs",
     "share": "tools/cloudflared.exe tunnel --url http://localhost:3000 --protocol http2 --no-autoupdate"
   },
   "dependencies": {
