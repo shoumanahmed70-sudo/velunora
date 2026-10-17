@@ -38,7 +38,21 @@ export const GOOGLE_AUTH_ENABLED =
 
 export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 
-export const ALLOW_DEV_LINKS = process.env.NEXT_PUBLIC_ALLOW_DEV_RESET_LINKS === "true";
+/**
+ * روابط إعادة التعيين/التحقق "وضع التطوير".
+ * الشّرطان معًا (وتم توثيقهما أيضًا في تعليقات المسارات):
+ *  1) NODE_ENV !== "production": في الإنتاج (`npm start`) **ممنوع نهائيًا** تسريب
+ *     هذه الروابط حتى لو كانت القيمة true — سطرًا واحدًا يمنع الاستيلاء على الحسابات.
+ *  2) قيمة عددية غير عامة `VELUNORA_DEV_RESET_LINKS=true` — متغير أع改 (بلا
+ *     NEXT_PUBLIC_ prefix) ليُقرأ وقت التشغيل ولا يتم تضمينه وقت البناء؛
+ *     لأن `NEXT_PUBLIC_*` في Next.js تُنسخ داخل الحزمة وقت `next build`،
+ *     فتغيير `.env.local` بعد البناء لا يأثر في الإنتاج.
+ * استبدال كلمة مرور بدون SMTP في الإنتاج يتم عبر:
+ *   npm run admin:create -- --email .. --password .. --name .. --role owner
+ */
+export const ALLOW_DEV_LINKS =
+  process.env.NODE_ENV !== "production" &&
+  (process.env.VELUNORA_DEV_RESET_LINKS ?? process.env.NEXT_PUBLIC_ALLOW_DEV_RESET_LINKS) === "true";
 
 /** حدود رفع الصور */
 export const UPLOAD_MAX_BYTES = 8 * 1024 * 1024;
