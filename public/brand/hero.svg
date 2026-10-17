@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="VELUNORA hero">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#241038"/>
+      <stop offset="0.45" stop-color="#3c2266"/>
+      <stop offset="1" stop-color="#150a26"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.72" cy="0.3" r="0.6">
+      <stop offset="0" stop-color="#c6a15b" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#c6a15b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0e0b8"/>
+      <stop offset="0.5" stop-color="#c6a15b"/>
+      <stop offset="1" stop-color="#8f6f34"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7f1e7" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#f7f1e7" stop-opacity="0.06"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+  <g opacity="0.28" stroke="url(#gold)" fill="none">
+    <circle cx="1150" cy="330" r="230"/>
+    <circle cx="1150" cy="330" r="330"/>
+    <circle cx="1150" cy="330" r="430"/>
+  </g>
+  <g transform="translate(1120 210)">
+    <rect x="0" y="0" width="62" height="30" rx="8" fill="url(#gold)"/>
+    <rect x="24" y="30" width="14" height="26" fill="url(#gold)"/>
+    <path d="M-52 56 H114 a18 18 0 0 1 18 18 V360 a34 34 0 0 1 -34 34 H-36 a34 34 0 0 1 -34 -34 V74 a18 18 0 0 1 18 -18 Z" fill="url(#glass)" stroke="url(#gold)" stroke-width="3"/>
+    <rect x="-34" y="196" width="130" height="86" rx="10" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.8"/>
+    <text x="31" y="252" text-anchor="middle" font-family="Georgia, serif" font-size="26" letter-spacing="6" fill="url(#gold)">VE</text>
+  </g>
+  <g stroke="url(#gold)" stroke-width="1.5" opacity="0.45" fill="none">
+    <path d="M0 700 C 260 640, 520 760, 820 690 S 1320 610, 1600 660"/>
+    <path d="M0 760 C 300 700, 560 820, 860 750 S 1340 670, 1600 720"/>
+  </g>
+  <text x="120" y="140" font-family="Georgia, serif" font-size="34" letter-spacing="14" fill="url(#gold)" opacity="0.9">VELUNORA</text>
+  <text x="122" y="182" font-family="Georgia, serif" font-size="20" letter-spacing="6" fill="#f7f1e7" opacity="0.65">EAU DE PARFUM</text>
+</svg>

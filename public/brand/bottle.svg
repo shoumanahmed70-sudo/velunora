@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 580" width="400" height="580" role="img" aria-label="VELUNORA flacon">
+  <defs>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5a3b93"/>
+      <stop offset="0.38" stop-color="#38235f"/>
+      <stop offset="0.72" stop-color="#25143f"/>
+      <stop offset="1" stop-color="#160b28"/>
+    </linearGradient>
+    <linearGradient id="glassRim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c6a15b" stop-opacity="0.6"/>
+      <stop offset="0.5" stop-color="#c6a15b" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#c6a15b" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="goldVertical" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f9eecb"/>
+      <stop offset="0.42" stop-color="#c6a15b"/>
+      <stop offset="0.78" stop-color="#9d7736"/>
+      <stop offset="1" stop-color="#e6cd92"/>
+    </linearGradient>
+    <linearGradient id="goldFlat" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8e6a2e"/>
+      <stop offset="0.35" stop-color="#e6cd92"/>
+      <stop offset="0.7" stop-color="#c6a15b"/>
+      <stop offset="1" stop-color="#8e6a2e"/>
+    </linearGradient>
+    <linearGradient id="highlight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0" stop-color="#c6a15b" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#c6a15b" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+  </defs>
+
+  <!-- هالة ذهبية -->
+  <ellipse cx="200" cy="288" rx="172" ry="232" fill="url(#halo)"/>
+
+  <!-- ظل أرضي -->
+  <ellipse cx="200" cy="532" rx="120" ry="20" fill="#0d0620" opacity="0.55" filter="url(#soft)"/>
+
+  <!-- غطاء ذهبي -->
+  <rect x="167" y="38" width="66" height="22" rx="11" fill="#f4e6c1"/>
+  <rect x="158" y="52" width="84" height="86" rx="20" fill="url(#goldVertical)"/>
+  <rect x="158" y="84" width="84" height="3" fill="#8e6a2e" opacity="0.45"/>
+  <rect x="158" y="110" width="84" height="2.5" fill="#8e6a2e" opacity="0.35"/>
+  <rect x="173" y="62" width="11" height="66" rx="5.5" fill="#ffffff" opacity="0.3"/>
+  <rect x="216" y="64" width="5" height="62" rx="2.5" fill="#5c421a" opacity="0.25"/>
+
+  <!-- طوق ذهبي وعنق -->
+  <rect x="164" y="134" width="72" height="18" rx="9" fill="url(#goldFlat)"/>
+  <rect x="172" y="142" width="56" height="54" rx="10" fill="#2a1748"/>
+  <rect x="172" y="142" width="56" height="54" rx="10" fill="none" stroke="#c6a15b" stroke-opacity="0.28" stroke-width="1.5"/>
+
+  <!-- جسم القارورة -->
+  <rect x="92" y="190" width="216" height="326" rx="46" fill="url(#glass)"/>
+  <rect x="92" y="190" width="216" height="326" rx="46" fill="none" stroke="url(#glassRim)" stroke-width="2"/>
+  <rect x="112" y="214" width="26" height="272" rx="13" fill="url(#highlight)"/>
+  <rect x="147" y="224" width="7" height="238" rx="3.5" fill="#ffffff" opacity="0.14"/>
+  <rect x="292" y="222" width="8" height="244" rx="4" fill="#ffffff" opacity="0.07"/>
+  <path d="M92 250c26-22 60-30 96-28" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="2"/>
+
+  <!-- البطاقة -->
+  <rect x="126" y="286" width="148" height="132" rx="20" fill="#f7f1e7" opacity="0.97"/>
+  <rect x="126.75" y="286.75" width="146.5" height="130.5" rx="19.5" fill="none" stroke="#c6a15b" stroke-opacity="0.55" stroke-width="1.5"/>
+  <text x="200" y="352" font-family="Georgia, 'Times New Roman', serif" font-size="62" font-weight="700" text-anchor="middle" fill="#2d1b4e">V</text>
+  <rect x="176" y="364" width="48" height="1.4" fill="#c6a15b"/>
+  <text x="200" y="386" font-family="Georgia, 'Times New Roman', serif" font-size="13" letter-spacing="4" text-anchor="middle" fill="#6a5a3a" font-weight="600">VELUNORA</text>
+  <text x="200" y="404" font-family="Georgia, 'Times New Roman', serif" font-size="8.5" letter-spacing="2.6" text-anchor="middle" fill="#a3937a">EAU DE PARFUM</text>
+</svg>

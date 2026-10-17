@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" width="1600" height="600" role="img" aria-label="VELUNORA banner">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#160a28"/>
+      <stop offset="0.42" stop-color="#2f1a52"/>
+      <stop offset="0.72" stop-color="#432665"/>
+      <stop offset="1" stop-color="#12071f"/>
+    </linearGradient>
+    <radialGradient id="gold" cx="0.68" cy="0.28" r="0.52">
+      <stop offset="0" stop-color="#c6a15b" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#c6a15b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="violet" cx="0.16" cy="0.82" r="0.55">
+      <stop offset="0" stop-color="#7b4fc4" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#7b4fc4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d0620" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0d0620" stop-opacity="0.65"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="600" fill="url(#bg)"/>
+  <rect width="1600" height="600" fill="url(#gold)"/>
+  <rect width="1600" height="600" fill="url(#violet)"/>
+
+  <!-- أقواس ذهبية -->
+  <g fill="none" stroke="#c6a15b" stroke-opacity="0.14">
+    <circle cx="1180" cy="250" r="300"/>
+    <circle cx="1180" cy="250" r="400"/>
+    <circle cx="240" cy="430" r="260"/>
+  </g>
+  <g stroke="#c6a15b" stroke-opacity="0.1">
+    <path d="M-40 520 L1640 120"/>
+    <path d="M-40 580 L1640 180"/>
+  </g>
+
+  <!-- لمعة قطرية -->
+  <g transform="rotate(-14 800 300)">
+    <rect x="380" y="-160" width="240" height="920" fill="url(#sheen)"/>
+  </g>
+
+  <!-- غبار ذهبي -->
+  <g fill="#e7d3a3">
+    <circle cx="140" cy="112" r="2.6" opacity="0.5"/>
+    <circle cx="268" cy="58" r="1.8" opacity="0.35"/>
+    <circle cx="352" cy="196" r="2.2" opacity="0.3"/>
+    <circle cx="470" cy="96" r="1.6" opacity="0.28"/>
+    <circle cx="560" cy="248" r="2.8" opacity="0.4"/>
+    <circle cx="648" cy="142" r="1.7" opacity="0.22"/>
+    <circle cx="742" cy="330" r="2.4" opacity="0.3"/>
+    <circle cx="836" cy="88" r="2" opacity="0.4"/>
+    <circle cx="905" cy="212" r="1.5" opacity="0.24"/>
+    <circle cx="988" cy="132" r="2.7" opacity="0.45"/>
+    <circle cx="1064" cy="286" r="1.9" opacity="0.28"/>
+    <circle cx="1152" cy="72" r="2.3" opacity="0.5"/>
+    <circle cx="1236" cy="368" r="1.6" opacity="0.22"/>
+    <circle cx="1324" cy="150" r="2.9" opacity="0.48"/>
+    <circle cx="1408" cy="264" r="1.8" opacity="0.3"/>
+    <circle cx="1486" cy="104" r="2.2" opacity="0.42"/>
+    <circle cx="196" cy="330" r="1.7" opacity="0.26"/>
+    <circle cx="318" cy="424" r="2.5" opacity="0.36"/>
+    <circle cx="432" cy="380" r="1.5" opacity="0.2"/>
+    <circle cx="548" cy="470" r="2.1" opacity="0.3"/>
+    <circle cx="672" cy="412" r="1.8" opacity="0.24"/>
+    <circle cx="796" cy="486" r="2.6" opacity="0.34"/>
+    <circle cx="918" cy="430" r="1.6" opacity="0.2"/>
+    <circle cx="1042" cy="498" r="2.2" opacity="0.3"/>
+    <circle cx="1180" cy="452" r="1.7" opacity="0.24"/>
+    <circle cx="1298" cy="512" r="2.4" opacity="0.34"/>
+    <circle cx="1420" cy="440" r="1.8" opacity="0.22"/>
+    <circle cx="1524" cy="330" r="2" opacity="0.3"/>
+    <circle cx="86" cy="470" r="2.2" opacity="0.3"/>
+    <circle cx="700" cy="36" r="1.9" opacity="0.3"/>
+    <circle cx="1580" cy="220" r="1.7" opacity="0.26"/>
+    <circle cx="40" cy="240" r="1.6" opacity="0.22"/>
+  </g>
+
+  <!-- معيّنات ذهبية -->
+  <g fill="#c6a15b" opacity="0.5">
+    <rect x="1120" y="126" width="9" height="9" transform="rotate(45 1124.5 130.5)"/>
+    <rect x="366" y="266" width="7" height="7" transform="rotate(45 369.5 269.5)" opacity="0.6"/>
+    <rect x="1436" y="336" width="8" height="8" transform="rotate(45 1440 340)" opacity="0.55"/>
+    <rect x="620" y="540" width="6" height="6" transform="rotate(45 623 543)" opacity="0.5"/>
+  </g>
+
+  <!-- قارورة شبحية في المنتصف -->
+  <g transform="translate(760 118)" opacity="0.5">
+    <rect x="30" y="86" width="128" height="196" rx="28" fill="#0e0620" fill-opacity="0.55" stroke="#c6a15b" stroke-opacity="0.35"/>
+    <rect x="76" y="46" width="36" height="44" rx="8" fill="#0e0620" fill-opacity="0.5" stroke="#c6a15b" stroke-opacity="0.25"/>
+    <rect x="64" y="20" width="60" height="34" rx="12" fill="#c6a15b" fill-opacity="0.55"/>
+    <rect x="48" y="140" width="92" height="84" rx="14" fill="#f7f1e7" fill-opacity="0.14" stroke="#c6a15b" stroke-opacity="0.3"/>
+    <rect x="46" y="100" width="12" height="150" rx="6" fill="#ffffff" fill-opacity="0.09"/>
+  </g>
+
+  <rect y="360" width="1600" height="240" fill="url(#floor)"/>
+</svg>

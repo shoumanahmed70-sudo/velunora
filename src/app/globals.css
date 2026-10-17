@@ -1,0 +1,1292 @@
+/**
+ * VELUNORA — الهوية البصرية (Tailwind v4).
+ * ألوان قابلة للتغيير من لوحة الإدارة عبر متغيرات CSS تُحقن على <html>.
+ */
+
+@import "tailwindcss";
+
+:root {
+  /* الألوان الافتراضية — تستبدلها لوحة الإدارة من إعدادات الهوية */
+  --vc-primary: #2d1b4e;
+  --vc-primary-soft: #4a2f7a;
+  --vc-gold: #c6a15b;
+  --vc-gold-soft: #e7d3a3;
+  --vc-cream: #f7f1e7;
+  --vc-background: #fcfaf6;
+  --vc-text: #241238;
+}
+
+@theme {
+  --color-primary: var(--vc-primary);
+  --color-primary-soft: var(--vc-primary-soft);
+  --color-gold: var(--vc-gold);
+  --color-gold-soft: var(--vc-gold-soft);
+  --color-cream: var(--vc-cream);
+  --color-bg: var(--vc-background);
+  --color-ink: var(--vc-text);
+  --color-muted: #6f6484;
+  --color-line: #e8e0d2;
+
+  --font-body: var(--font-body), "Cairo", system-ui, sans-serif;
+  --font-display: var(--font-display), "Cormorant Garamond", serif;
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--vc-background);
+  color: var(--vc-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* عناوين فاخرة */
+.display {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+/* حرف ذهبي متدرج للعناوين الكبيرة */
+.text-gold-gradient {
+  background: linear-gradient(120deg, var(--vc-gold) 0%, #f0e0b8 45%, var(--vc-gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* أزرار أساسية */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.7rem 1.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  transition: all 0.35s var(--ease-luxe);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--vc-primary);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--vc-primary-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -14px rgb(45 27 78 / 0.6);
+}
+.btn-gold {
+  background: linear-gradient(120deg, var(--vc-gold), #d8b878);
+  color: #2b1c0a;
+}
+.btn-gold:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -14px rgb(198 161 91 / 0.75);
+}
+.btn-outline {
+  border: 1px solid var(--vc-primary);
+  color: var(--vc-primary);
+  background: transparent;
+}
+.btn-outline:hover:not(:disabled) {
+  background: var(--vc-primary);
+  color: #fff;
+}
+.btn-ghost {
+  color: var(--vc-text);
+  background: transparent;
+}
+.btn-ghost:hover:not(:disabled) {
+  background: rgb(45 27 78 / 0.07);
+}
+
+/* حقول الإدخال */
+.field {
+  width: 100%;
+  border: 1px solid var(--vc-line, #e8e0d2);
+  background: #fff;
+  border-radius: 0.85rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+  color: var(--vc-text);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.field:focus {
+  outline: none;
+  border-color: var(--vc-gold);
+  box-shadow: 0 0 0 4px rgb(198 161 91 / 0.18);
+}
+.field-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--vc-text);
+}
+
+/* بطاقات */
+.card-lux {
+  background: #fff;
+  border: 1px solid var(--vc-line, #e8e0d2);
+  border-radius: 1.1rem;
+  transition: transform 0.4s var(--ease-luxe), box-shadow 0.4s var(--ease-luxe);
+}
+.card-lux:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px -28px rgb(45 27 78 / 0.45);
+}
+
+/* شارة صغيرة */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* تحميل */
+.spinner {
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid rgb(255 255 255 / 0.35);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ظهور تدريجي */
+.reveal {
+  animation: reveal 0.6s var(--ease-luxe) both;
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* شريط تمرير أنيق */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(45 27 78 / 0.25);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* إخفاء سهم البحث في Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+/* ===================================================================
+   طبقة الحركة الفاخرة (3D) — كل الحركة عبر transform فقط (GPU).
+   =================================================================== */
+
+/* احترام تفضيل تقليل الحركة */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .rv,
+  .rv-in,
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  .orb,
+  .aurora,
+  .shine,
+  .floaty,
+  .scroll-hint,
+  .hero-sheen,
+  .banner-sheen,
+  .marquee {
+    animation: none !important;
+  }
+  .tilt,
+  .tilt.is-tilt,
+  .tilt .tilt-media,
+  .tilt .tilt-pop,
+  .hero-bg,
+  .hero-glow,
+  .hero-orbs,
+  .hero-content,
+  .banner-bg {
+    transform: none !important;
+  }
+}
+
+/* ظهور تدريجي عند التمرير */
+.rv {
+  opacity: 0;
+  transform: translate3d(0, var(--rv-y, 26px), 0);
+  transition: opacity 0.75s var(--ease-luxe), transform 0.75s var(--ease-luxe);
+}
+.rv-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- الميلان ثلاثي الأبعاد ---------- */
+.perspective {
+  perspective: 1200px;
+}
+.tilt {
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  transition: transform 0.6s var(--ease-luxe), box-shadow 0.6s var(--ease-luxe);
+}
+.tilt.is-tilt {
+  transition: transform 0.12s linear, box-shadow 0.5s var(--ease-luxe);
+  transform: perspective(1000px)
+    rotateX(calc(var(--my, 0) * var(--tilt-max, 8deg) * -1))
+    rotateY(calc(var(--mx, 0) * var(--tilt-max, 8deg)))
+    translateY(-6px)
+    scale(1.02);
+  box-shadow: 0 34px 66px -32px rgb(45 27 78 / 0.55), 0 0 0 1px rgb(198 161 91 / 0.28);
+}
+.tilt .glare {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  background: radial-gradient(
+    26rem circle at calc(50% + var(--mx, 0) * 45%) calc(45% + var(--my, 0) * 45%),
+    rgb(255 255 255 / 0.3),
+    transparent 62%
+  );
+  mix-blend-mode: screen;
+}
+.tilt.is-tilt .glare {
+  opacity: 1;
+}
+.tilt .tilt-pop {
+  transform: translate3d(calc(var(--mx, 0) * -9px), calc(var(--my, 0) * -7px), 0);
+  transition: transform 0.5s var(--ease-luxe);
+}
+.tilt.is-tilt .tilt-pop {
+  transition: transform 0.12s linear;
+}
+.tilt .tilt-media {
+  transform: scale(1.06) translate3d(calc(var(--mx, 0) * -10px), calc(var(--my, 0) * -8px), 0);
+  transition: transform 0.6s var(--ease-luxe);
+}
+.tilt.is-tilt .tilt-media {
+  transform: scale(1.12) translate3d(calc(var(--mx, 0) * -16px), calc(var(--my, 0) * -12px), 0);
+  transition: transform 0.12s linear;
+}
+
+/* بطاقة بلا transform خاص حتى لا تتعارض مع الميلان */
+.card-3d {
+  background: #fff;
+  border: 1px solid var(--vc-line, #e8e0d2);
+  border-radius: 1.1rem;
+  box-shadow: 0 1px 2px rgb(45 27 78 / 0.04);
+  transition: box-shadow 0.5s var(--ease-luxe);
+}
+.card-3d:hover {
+  box-shadow: 0 30px 58px -34px rgb(45 27 78 / 0.5);
+}
+
+/* ---------- البطل (Hero) ---------- */
+.hero {
+  perspective: 1400px;
+}
+.hero-layer {
+  position: absolute;
+  inset: 0;
+}
+.hero-bg {
+  transform: translate3d(calc(var(--px, 0) * -18px), calc(var(--py, 0) * -12px + var(--sy, 0px) * -0.35), 0)
+    scale(1.14);
+}
+.hero-glow {
+  inset: -25%;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    34rem 34rem at calc(50% + var(--px, 0) * 16%) calc(42% + var(--py, 0) * 14%),
+    rgb(198 161 91 / 0.42),
+    transparent 62%
+  );
+}
+.hero-orbs {
+  transform: translate3d(calc(var(--px, 0) * -32px), calc(var(--py, 0) * -24px), 0);
+}
+.hero-content {
+  transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--py, 0) * 8px + var(--sy, 0px) * -0.1), 0);
+}
+.hero-bottle {
+  transform: translate3d(calc(var(--px, 0) * 22px), calc(var(--py, 0) * 16px), 0);
+}
+.hero-sheen,
+.banner-sheen {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.22), transparent);
+  animation: sheen 8s var(--ease-luxe) infinite;
+  pointer-events: none;
+}
+.hero-sheen {
+  inset-inline-start: 0;
+}
+
+/* ---------- البانر ---------- */
+.banner-3d {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  border: 1px solid rgb(198 161 91 / 0.3);
+  background: var(--vc-primary);
+  box-shadow: 0 30px 70px -40px rgb(45 27 78 / 0.6);
+}
+.banner-bg {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(0, calc(var(--sy, 0px) * -0.5), 0) scale(1.14);
+}
+
+/* ---------- هالات وعناصر عائمة ---------- */
+.orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(30px);
+  animation: floaty 9s ease-in-out infinite;
+}
+.aurora {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(70px);
+  animation: aurora 16s ease-in-out infinite;
+}
+.floaty {
+  animation: floaty 9s ease-in-out infinite;
+}
+.scroll-hint {
+  animation: bob 2.2s ease-in-out infinite;
+}
+
+/* ---------- شريط متحرك ---------- */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 36s linear infinite;
+}
+.marquee-mask {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* ---------- نص ذهبي يلمع ---------- */
+.shine {
+  background: linear-gradient(100deg, var(--vc-gold) 18%, #fff4d8 45%, var(--vc-gold) 72%);
+  background-size: 240% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 7s linear infinite;
+}
+
+/* خط ذهبي ينمو عند الظهور */
+.rule-track {
+  display: block;
+  height: 1px;
+  width: 4rem;
+  background: rgb(198 161 91 / 0.25);
+  overflow: hidden;
+}
+.rule-track > span {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: var(--vc-gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.9s var(--ease-luxe) 0.15s;
+}
+html[dir="rtl"] .rule-track > span {
+  transform-origin: right;
+}
+.rv-in .rule-track > span {
+  transform: scaleX(1);
+}
+
+/* ---------- حركات ---------- */
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -20px, 0);
+  }
+}
+@keyframes aurora {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(4%, -3%, 0) scale(1.12);
+    opacity: 0.8;
+  }
+}
+@keyframes shine {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+@keyframes sheen {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(240%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(9px);
+    opacity: 1;
+  }
+}
+
+/* ===================================================================
+   الواجهة الليلية الفخمة (Night) — تُفعَّل على الصفحات التسويقية فقط
+   (الرئيسية/المنتجات/تفاصيل المنتج) بإضافة الصنف .night على <html>.
+   كل شيء قابل للعودة فورًا: إزالة الصنف تُعيد المظهر الفاتح كما كان.
+   =================================================================== */
+
+html.night {
+  /* لوحة الألوان الليلية — بنفسجي ملكي داكن + ذهب */
+  --color-bg: #0a0614;
+  --color-ink: #f4eeff;
+  --color-muted: #b3a2d8;
+  --color-line: #2d2050;
+  --color-cream: #17102c;
+  --color-primary: #2a1a4d;
+  --color-primary-soft: #5a3a95;
+  --color-gold: #d9b877;
+  --color-gold-soft: #f2ddab;
+  color-scheme: dark;
+}
+
+/* خلفية الصفحة: تدرّجات مخملية + هالات ذهبية خافتة */
+html.night body {
+  background-color: #0a0614;
+  /* لون النص الأساسي: قاعدة body تستخدم --vc-text مباشرة،
+     وهي قد تُحقن inline على <html> من لوحة الإدارة ⇒ نضبطها هنا صراحةً. */
+  color: #f4eeff;
+  background-image:
+    radial-gradient(70rem 60rem at 88% -8%, rgb(122 78 191 / 0.22), transparent 62%),
+    radial-gradient(55rem 50rem at -6% 108%, rgb(198 161 91 / 0.12), transparent 62%),
+    linear-gradient(180deg, #0a0614 0%, #130a28 42%, #0a0614 100%);
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+/* تسميات الحقول (تستخدم --vc-text مباشرة أيضًا) */
+html.night .field-label {
+  color: #f4eeff;
+}
+
+html.night ::selection {
+  background: rgb(198 161 91 / 0.35);
+  color: #fff;
+}
+html.night ::-webkit-scrollbar-thumb {
+  background: rgb(198 161 91 / 0.35);
+}
+html.night ::-webkit-scrollbar-thumb:hover {
+  background: rgb(198 161 91 / 0.55);
+}
+
+/* ---------- النصوص ---------- */
+/* text-primary يُستخدم كنص على خلفية داكنة → يصبح فاتحًا */
+html.night .text-primary {
+  color: #ece1ff;
+}
+html.night .hover\:text-primary:hover {
+  color: var(--color-gold);
+}
+/* ...لكن إن كان على رقاقة ذهبية فيبقى غامقًا (تباين صحيح) */
+html.night .bg-gold.text-primary,
+html.night .bg-gold .text-primary {
+  color: #2b1c0a;
+}
+html.night .text-line {
+  color: #3a2a63;
+}
+
+/* ---------- أسطح كانت بيضاء ---------- */
+html.night .bg-white {
+  background-color: #17102c;
+}
+html.night .bg-white\/70 {
+  background-color: rgb(23 16 44 / 0.78);
+}
+html.night .bg-white\/65 {
+  background-color: rgb(10 6 20 / 0.72);
+}
+html.night .bg-white\/60 {
+  background-color: rgb(171 132 255 / 0.06);
+}
+html.night .bg-white\/5 {
+  background-color: rgb(255 255 255 / 0.05);
+}
+html.night .hover\:bg-white:hover {
+  background-color: rgb(255 255 255 / 0.12);
+}
+/* رقاقة "نفد المخزون": تبقى غامقة */
+html.night .bg-ink {
+  background-color: #1c1136;
+}
+html.night .hover\:bg-cream:hover {
+  background-color: rgb(255 255 255 / 0.07);
+}
+html.night .hover\:bg-primary\/5:hover {
+  background-color: rgb(255 255 255 / 0.07);
+}
+html.night .bg-cream\/60 {
+  background-color: rgb(23 16 44 / 0.55);
+}
+
+/* ---------- البطاقات والحقول ---------- */
+html.night .card-3d,
+html.night .card-lux {
+  background: linear-gradient(180deg, #1a1233 0%, #130d26 100%);
+  border-color: #33245a;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+}
+html.night .card-3d:hover {
+  box-shadow: 0 30px 58px -34px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(198 161 91 / 0.18);
+}
+html.night .field {
+  background: #150e2c;
+  border-color: #33245a;
+  color: #f4eeff;
+}
+html.night .field::placeholder {
+  color: #8d7cb5;
+}
+html.night .btn-ghost {
+  color: #f4eeff;
+}
+html.night .btn-ghost:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.08);
+}
+html.night .btn-outline {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+html.night .btn-outline:hover:not(:disabled) {
+  background: var(--color-gold);
+  color: #2b1c0a;
+}
+
+/* ---------- ستارة البطل/البانر لقراءة النص فوق الصورة ---------- */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgb(8 4 16 / 0.95) 0%,
+    rgb(8 4 16 / 0.6) 46%,
+    rgb(8 4 16 / 0.34) 100%
+  );
+}
+.hero-scrim::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgb(8 4 16 / 0.92), rgb(8 4 16 / 0.12) 60%, transparent);
+}
+html[dir="rtl"] .hero-scrim::after {
+  background: linear-gradient(to left, rgb(8 4 16 / 0.92), rgb(8 4 16 / 0.12) 60%, transparent);
+}
+.photo-fade {
+  filter: brightness(0.82) saturate(1.06) contrast(1.03);
+}
+
+/* ==========================================================================
+   الفاتورة الفخمة — مستند داكن أنيق على الشاشة، ونسخة ورقية فاتحة عند الطباعة.
+   لا تعتمد على ثيم الصفحة (تعمل بنفس الشكل فوق صفحات فاتحة أو داكنة).
+   ========================================================================== */
+.inv {
+  --inv-bg1: #17102c;
+  --inv-bg2: #0d0720;
+  --inv-line: #372663;
+  --inv-row: rgb(255 255 255 / 0.06);
+  --inv-ink: #f6f0ff;
+  --inv-muted: #bcabdd;
+  --inv-gold: #d9b877;
+  --inv-gold-soft: #f3dfae;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 18px;
+  color: var(--inv-ink);
+  background:
+    radial-gradient(42rem 26rem at 92% -14%, rgb(122 78 191 / 0.24), transparent 62%),
+    radial-gradient(32rem 22rem at -10% 112%, rgb(198 161 91 / 0.13), transparent 62%),
+    linear-gradient(180deg, var(--inv-bg1), var(--inv-bg2));
+  box-shadow: 0 34px 70px -46px rgb(24 12 48 / 0.9), 0 0 0 1px rgb(217 184 119 / 0.16);
+}
+/* الإطار الذهبي المزدوج */
+.inv::before,
+.inv::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 15px;
+}
+.inv::before {
+  inset: 9px;
+  border: 1px solid rgb(217 184 119 / 0.34);
+}
+.inv::after {
+  inset: 15px;
+  border: 1px solid rgb(217 184 119 / 0.14);
+}
+/* العلامة المائية */
+.inv-wm {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: normal;
+  font-size: clamp(2.4rem, 12vw, 6rem);
+  color: rgb(246 240 255 / 0.04);
+  transform: rotate(-16deg);
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+}
+.inv.inv-latin .inv-wm {
+  letter-spacing: 0.28em;
+}
+.inv-body {
+  position: relative;
+  z-index: 1;
+  padding: 30px 26px 22px;
+}
+
+/* ---------- الترويسة ---------- */
+.inv-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.inv-logo {
+  height: 40px;
+  width: auto;
+  margin-bottom: 6px;
+}
+.inv-wordmark {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  color: #fff;
+  line-height: 1.15;
+}
+/* اسم لاتيني فقط: نفخ الخط المفرد لشكل يليق بالعلامة */
+.inv.inv-latin .inv-wordmark {
+  letter-spacing: 0.3em;
+}
+.inv-tagline {
+  margin-top: 7px;
+  font-size: 0.7rem;
+  line-height: 1.7;
+  color: var(--inv-muted);
+  word-spacing: 0.08em;
+  max-width: 22rem;
+}
+.inv-doc {
+  text-align: end;
+}
+.inv-doc-label {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  letter-spacing: normal;
+  color: var(--inv-gold);
+  line-height: 1;
+}
+/* التتبّع المفرد لاتيني فقط؛ "فاتورة" عربية لا تُباعَد حروفها */
+.inv-doc-label-en {
+  letter-spacing: 0.18em;
+}
+.inv-doc-num {
+  margin-top: 8px;
+  font-size: 0.62rem;
+  word-spacing: 0.08em;
+  color: var(--inv-muted);
+}
+.inv-doc-num b {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  color: var(--inv-ink);
+}
+/* شارة الحالة */
+.inv-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid;
+  font-size: 0.68rem;
+  font-weight: 600;
+  word-spacing: 0.06em;
+}
+.inv-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+.inv-badge[data-tone="info"] {
+  color: var(--inv-gold-soft);
+  border-color: rgb(217 184 119 / 0.42);
+  background: rgb(217 184 119 / 0.1);
+}
+.inv-badge[data-tone="warn"] {
+  color: #f8d98a;
+  border-color: rgb(251 191 36 / 0.42);
+  background: rgb(251 191 36 / 0.1);
+}
+.inv-badge[data-tone="ok"] {
+  color: #9df0cb;
+  border-color: rgb(52 211 153 / 0.42);
+  background: rgb(52 211 153 / 0.1);
+}
+.inv-badge[data-tone="bad"] {
+  color: #fca5a5;
+  border-color: rgb(248 113 113 / 0.42);
+  background: rgb(248 113 113 / 0.1);
+}
+
+/* ---------- فاصل ذهبي ---------- */
+.inv-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: var(--inv-gold);
+}
+.inv-rule::before,
+.inv-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(217 184 119 / 0.5), transparent);
+}
+.inv-rule span {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+}
+
+/* ---------- شبكة البيانات ---------- */
+.inv-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--inv-line);
+  border: 1px solid var(--inv-line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.inv-cell {
+  background: rgb(255 255 255 / 0.03);
+  padding: 10px 14px;
+}
+.inv-cell dt {
+  font-size: 0.64rem;
+  word-spacing: 0.1em;
+  color: var(--inv-muted);
+}
+.inv-cell dd {
+  margin-top: 4px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--inv-ink);
+}
+
+/* ---------- لوحات البيانات ---------- */
+.inv-panels {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+.inv-panel {
+  border: 1px solid var(--inv-line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: rgb(255 255 255 / 0.025);
+}
+.inv-panel h4 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.64rem;
+  word-spacing: 0.12em;
+  color: var(--inv-gold);
+  margin-bottom: 9px;
+}
+.inv-panel p {
+  font-size: 0.8rem;
+  line-height: 1.95;
+  color: var(--inv-muted);
+}
+.inv-panel .strong {
+  color: var(--inv-ink);
+  font-weight: 600;
+}
+
+/* ---------- الأصناف ---------- */
+.inv-items {
+  margin-top: 18px;
+  border: 1px solid var(--inv-line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.inv-items table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.inv-items thead th {
+  background: linear-gradient(180deg, rgb(217 184 119 / 0.16), rgb(217 184 119 / 0.05));
+  color: var(--inv-gold-soft);
+  font-size: 0.66rem;
+  font-weight: 700;
+  word-spacing: 0.1em;
+  padding: 10px 12px;
+  text-align: start;
+  white-space: nowrap;
+}
+.inv-items tbody td {
+  padding: 11px 12px;
+  border-top: 1px solid var(--inv-row);
+  vertical-align: middle;
+}
+.inv-items tbody tr:first-child td {
+  border-top: 0;
+}
+.inv-prod {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 12rem;
+}
+.inv-thumb {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--inv-line);
+  background: #0b0616;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--inv-gold);
+}
+.inv-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.inv-prod-name {
+  font-weight: 600;
+  color: var(--inv-ink);
+  line-height: 1.5;
+}
+.inv-prod-en {
+  font-size: 0.7rem;
+  color: var(--inv-muted);
+}
+.inv-chip {
+  display: inline-block;
+  margin-top: 5px;
+  margin-inline-end: 4px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid rgb(217 184 119 / 0.3);
+  font-size: 0.6rem;
+  color: var(--inv-gold-soft);
+}
+.inv-strike {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--inv-muted);
+  text-decoration: line-through;
+}
+.inv-num {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.inv-empty {
+  padding: 22px 12px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--inv-muted);
+}
+
+/* ---------- الإجماليات ---------- */
+.inv-totals {
+  margin-top: 16px;
+  margin-inline-start: auto;
+  width: 100%;
+  max-width: 23rem;
+}
+.inv-trow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 2px;
+  font-size: 0.83rem;
+  color: var(--inv-muted);
+}
+.inv-trow b {
+  color: var(--inv-ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.inv-grand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1px solid rgb(217 184 119 / 0.4);
+  background: linear-gradient(135deg, rgb(217 184 119 / 0.22), rgb(217 184 119 / 0.07));
+}
+.inv-grand span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--inv-ink);
+}
+.inv-grand b {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  color: var(--inv-gold-soft);
+  white-space: nowrap;
+}
+
+/* ---------- الختم ---------- */
+.inv-seal {
+  flex: none;
+  width: 104px;
+  height: 104px;
+  padding: 8px;
+  border-radius: 999px;
+  border: 2px solid rgb(217 184 119 / 0.55);
+  box-shadow: inset 0 0 0 3px rgb(217 184 119 / 0.14);
+  color: var(--inv-gold-soft);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  transform: rotate(-11deg);
+}
+.inv-seal b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  word-spacing: 0.06em;
+}
+.inv-seal i {
+  display: block;
+  margin-top: 3px;
+  font-style: normal;
+  font-size: 0.56rem;
+  word-spacing: 0.1em;
+  opacity: 0.85;
+}
+.inv-seal[data-tone="ok"] {
+  border-color: rgb(52 211 153 / 0.6);
+  color: #9df0cb;
+  box-shadow: inset 0 0 0 3px rgb(52 211 153 / 0.14);
+}
+.inv-seal[data-tone="warn"] {
+  border-color: rgb(251 191 36 / 0.6);
+  color: #f8d98a;
+  box-shadow: inset 0 0 0 3px rgb(251 191 36 / 0.14);
+}
+.inv-seal[data-tone="bad"] {
+  border-color: rgb(248 113 113 / 0.6);
+  color: #fca5a5;
+  box-shadow: inset 0 0 0 3px rgb(248 113 113 / 0.14);
+}
+
+/* ---------- التذييل ---------- */
+.inv-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--inv-line);
+}
+.inv-foot h4 {
+  font-size: 0.64rem;
+  word-spacing: 0.12em;
+  color: var(--inv-gold);
+  margin-bottom: 7px;
+}
+.inv-foot p {
+  font-size: 0.76rem;
+  line-height: 1.9;
+  color: var(--inv-muted);
+}
+.inv-foot a {
+  color: var(--inv-muted);
+  text-decoration: none;
+}
+.inv-terms {
+  max-width: 26rem;
+}
+.inv-terms ul {
+  display: grid;
+  gap: 3px;
+}
+.inv-terms li {
+  position: relative;
+  padding-inline-start: 13px;
+  font-size: 0.74rem;
+  line-height: 1.85;
+  color: var(--inv-muted);
+}
+.inv-terms li::before {
+  content: "◆";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  font-size: 0.5rem;
+  line-height: 2.6;
+  color: rgb(217 184 119 / 0.7);
+}
+.inv-thanks {
+  margin-top: 18px;
+  text-align: center;
+}
+.inv-thanks b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  word-spacing: 0.14em;
+  color: var(--inv-gold-soft);
+}
+.inv-note {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgb(217 184 119 / 0.2);
+  text-align: center;
+  font-size: 0.64rem;
+  line-height: 1.9;
+  color: rgb(188 171 221 / 0.8);
+}
+
+@media (min-width: 640px) {
+  .inv-meta {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (min-width: 720px) {
+  .inv-panels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .inv-body {
+    padding: 24px 16px 18px;
+  }
+  .inv-seal {
+    width: 88px;
+    height: 88px;
+  }
+  .inv-items .inv-col-price {
+    display: none;
+  }
+}
+
+/* إجراءات الطباعة */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  /* عزل الفاتورة عن باقي الصفحة عند الطباعة — طبقة تعمل في كل المتصفحات */
+  body.printing-invoice * {
+    visibility: hidden;
+  }
+  body.printing-invoice .invoice-print,
+  body.printing-invoice .invoice-print * {
+    visibility: visible;
+  }
+  /* طبقة حديثة (:has): نُبقي سلسلة الفاتورة فقط، فيصبح ارتفاع المستند =
+     ارتفاع الفاتورة، فتُطبَع على صفحات متعددة بلا أوراق فارغة أو اقتصاص. */
+  body.printing-invoice *:not(:has(.invoice-print)):not(.invoice-print):not(.invoice-print *) {
+    display: none !important;
+  }
+  body.printing-invoice .invoice-print {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  /* إزالة هوامش الحاويات كليًا: الفاتورة تأخذ كامل عرض الورقة وتبدأ من أعلاها */
+  body.printing-invoice :has(.invoice-print) {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* ضمان ورقة واحدة: نُصغّر المستند قليلًا فتسع الفاتورة أي مقاس ورق/هوامش
+     (zoom آمنة للطباعة في كروم/إيدج/سفاري/فايرفوكس الحديث). */
+  body.printing-invoice .invoice-print {
+    width: 100% !important;
+    max-width: none !important;
+    zoom: 0.9;
+  }
+
+  /* نسخة الطباعة: فاتحة فخمة — حبر أقل وقراءة واضحة على الورق */
+  .inv,
+  .inv * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .inv {
+    --inv-bg1: #fffdf9;
+    --inv-bg2: #fbf6ec;
+    --inv-line: #e2d5bb;
+    --inv-row: #ece2cd;
+    --inv-ink: #241238;
+    --inv-muted: #6b6081;
+    --inv-gold: #a8843c;
+    --inv-gold-soft: #8a6a2e;
+    overflow: visible !important;
+    border-radius: 0;
+    background: #fffdf9 !important;
+    box-shadow: none !important;
+  }
+  .inv::before {
+    border-color: #cbb388 !important;
+  }
+  .inv::after {
+    border-color: #e3d6bb !important;
+  }
+  .inv-wm {
+    display: none !important;
+  }
+  .inv-cell,
+  .inv-panel {
+    background: #fff !important;
+  }
+  .inv-items thead th {
+    background: #f4ecdb !important;
+    color: #6b4f1d !important;
+  }
+  .inv-thumb {
+    background: #f7f1e7 !important;
+  }
+  .inv-grand {
+    background: #f7efdc !important;
+  }
+  .inv-seal {
+    box-shadow: none !important;
+  }
+  .inv-thanks b,
+  .inv-doc-label {
+    color: #8a6a2e !important;
+  }
+}
+
+/* مقاس الورقة والهوامش عند الطباعة */
+@page {
+  margin: 12mm;
+}
+
+/* متصفحات قديمة لا تدعم :has() — نُثبّت الفاتورة أعلى الورقة (السلوك السابق) */
+@supports not selector(:has(*)) {
+  @media print {
+    body.printing-invoice .invoice-print {
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0;
+      width: 100%;
+    }
+  }
+}
