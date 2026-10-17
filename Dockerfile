@@ -42,6 +42,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/next.config.* ./
 COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/seeds ./seeds
 COPY --from=builder /app/tools ./tools
 # مجلد البيانات (يُوصَل بحجم دائم عند التشغيل)
 RUN mkdir -p /app/var && chown -R velunora:velunora /app/var
