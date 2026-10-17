@@ -3,6 +3,8 @@ import { json, readJson, route } from "@/lib/server/http";
 import { badRequest, notFound, tooMany } from "@/lib/server/errors";
 import { clientIp, rateLimit } from "@/lib/server/ratelimit";
 import { getSession } from "@/lib/server/session";
+import { toPublicOrder } from "@/lib/server/public-order";
+import { normalizePhone, phonesMatch } from "@/lib/server/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,11 +12,6 @@ export const dynamic = "force-dynamic";
 interface Body {
   number?: string;
   phone?: string;
-}
-
-function lastDigitsPhone(value: string): string {
-  const digits = (value || "").replace(/\D/g, "");
-  return digits.slice(-9);
 }
 
 /**
@@ -30,17 +27,18 @@ export const POST = route(async (request: Request) => {
   const phone = (body.phone || "").trim();
 
   if (!number || number.length > 30) throw badRequest("أدخل رقم الطلب", "validation");
-  if (phone.replace(/\D/g, "").length < 8) throw badRequest("أدخل رقم الجوال", "validation");
+  if (normalizePhone(phone).length < 8) throw badRequest("أدخل رقم الجوال", "validation");
 
   const db = await getDriver();
   const order = await db.getOrderByNumber(number);
   if (!order) throw notFound("لم يتم العثور على طلب بهذه البيانات");
 
+  // الجلسة مُتحقَّق من نسختها (تُبطل بعد تغيير كلمة المرور أو تعطيل الحساب)
   const session = await getSession();
   const isOwner = Boolean(session && order.uid && session.uid === order.uid);
-  const phoneMatches = lastDigitsPhone(order.customer.phone) === lastDigitsPhone(phone);
+  const phoneMatches = phonesMatch(order.customer.phone, phone);
 
   if (!isOwner && !phoneMatches) throw notFound("لم يتم العثور على طلب بهذه البيانات");
 
-  return json({ order });
+  return json({ order: toPublicOrder(order) });
 });

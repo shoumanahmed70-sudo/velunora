@@ -2,11 +2,12 @@ import { getDriver } from "@/lib/store";
 import { requireUserApi } from "@/lib/server/guard";
 import { json, route } from "@/lib/server/http";
 import { notFound } from "@/lib/server/errors";
+import { toPublicOrder } from "@/lib/server/public-order";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** تفاصيل طلب واحد للعميل — بشرط أن يكون الطلب مملوكًا له. */
+/** تفاصيل طلب واحد للعميل — بشرط أن يكون الطلب مملوكًا له، وبلا حقول إدارية. */
 export const GET = route(async (_request: Request, context: { params: Promise<{ number: string }> }) => {
   const { uid } = await requireUserApi();
   const { number } = await context.params;
@@ -14,5 +15,5 @@ export const GET = route(async (_request: Request, context: { params: Promise<{ 
   const order = await db.getOrderByNumber(decodeURIComponent(number).trim().toUpperCase());
 
   if (!order || order.uid !== uid) throw notFound("الطلب غير موجود");
-  return json({ order });
+  return json({ order: toPublicOrder(order) });
 });

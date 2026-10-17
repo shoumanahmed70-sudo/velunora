@@ -66,8 +66,11 @@ export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 }
 
+/** الحد الأدنى لكلمة المرور: 8 أحرف (سياسة موحّدة على الخادم والواجهة) */
+export const PASSWORD_MIN_LENGTH = 8;
+
 export function isValidPassword(password: string): boolean {
-  return typeof password === "string" && password.length >= 6 && password.length <= 128;
+  return typeof password === "string" && password.length >= PASSWORD_MIN_LENGTH && password.length <= 128;
 }
 
 export function isValidPhone(phone: string): boolean {

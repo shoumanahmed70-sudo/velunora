@@ -31,7 +31,8 @@ import {
   defaultPrivateSettings,
   defaultSettings,
 } from "@/lib/store/defaults";
-import { assertMinOrder, buildOrderItem, computeTotals, PricingError, round2 } from "@/lib/server/pricing";
+import { assertMinOrder, buildOrderItem, computeTotals, mergeOrderLines, PricingError } from "@/lib/server/pricing";
+import { makeOrderNumber } from "@/lib/server/order-number";
 import { getFirebaseAdmin } from "@/lib/server/firebase-admin";
 
 /**
@@ -235,36 +236,53 @@ export class FirebaseDriver implements StoreDriver {
       const counterSnap = await tx.get(counterRef);
       const counter = Number((counterSnap.data() as { value?: number } | undefined)?.value || 0) + 1;
 
-      const productRefs = input.items.map((line) => this.db.collection(C.products).doc(line.productId));
+      // دمج البنود المتطابقة قبل أي فحص أو خصم:
+      // - يمنع تجاوز المخزون ببنود مكرّرة لنفس الحجم.
+      // - يمنع طغيان آخر tx.update على خصم سابق لنفس المنتج.
+      const lines = mergeOrderLines(input.items);
+
+      // قراءة كل منتج مرة واحدة فقط داخل المعاملة
+      const productIds = [...new Set(lines.map((l) => l.productId))];
+      const productRefs = productIds.map((id) => this.db.collection(C.products).doc(id));
       const productSnaps = await Promise.all(productRefs.map((ref) => tx.get(ref)));
 
-      const items: OrderItem[] = [];
-      const nextStocks: Array<{ ref: FirebaseFirestore.DocumentReference; data: Record<string, unknown> }> = [];
-
+      const productsById = new Map<string, Product>();
       productSnaps.forEach((snap, index) => {
-        const line = input.items[index];
         if (!snap.exists) throw new PricingError("أحد المنتجات لم يعد متوفرًا", "validation");
         const product = { id: snap.id, ...(snap.data() as Omit<Product, "id">) } as Product;
         if (!product.active) throw new PricingError("أحد المنتجات غير متوفر حاليًا", "validation");
+        productsById.set(productIds[index], product);
+      });
 
-        const item = buildOrderItem(product, line.variantId, line.options || {}, line.qty);
+      const items: OrderItem[] = [];
+      // نسخة متراكمة واحدة لكل منتج: نطبّق عليها كل الخصومات ثم نكتبها مرة واحدة
+      const nextByProduct = new Map<string, { variants: Product["variants"]; stock: number }>();
+
+      for (const line of lines) {
+        const product = productsById.get(line.productId);
+        if (!product) throw new PricingError("أحد المنتجات لم يعد متوفرًا", "validation");
+
+        // يتحقق من المخزون مقابل الكمية المتراكمة قبل أي كتابة
+        const item = buildOrderItem(product, line.variantId ?? null, line.options || {}, line.qty);
         items.push(item);
 
+        const current =
+          nextByProduct.get(product.id) ?? {
+            variants: product.variants.map((v) => ({ ...v })),
+            stock: product.stock,
+          };
+
         if (item.variantId) {
-          const variants = product.variants.map((v) =>
+          const variants = current.variants.map((v) =>
             v.id === item.variantId ? { ...v, stock: Math.max(0, v.stock - item.qty) } : v
           );
-          nextStocks.push({
-            ref: productRefs[index],
-            data: { variants, stock: variants.reduce((s, v) => s + v.stock, 0), updatedAt: Date.now() },
-          });
+          current.variants = variants;
+          current.stock = Math.max(0, variants.reduce((s, v) => s + v.stock, 0));
         } else {
-          nextStocks.push({
-            ref: productRefs[index],
-            data: { stock: Math.max(0, product.stock - item.qty), updatedAt: Date.now() },
-          });
+          current.stock = Math.max(0, current.stock - item.qty);
         }
-      });
+        nextByProduct.set(product.id, current);
+      }
 
       assertMinOrder(items, settings);
       const totals = computeTotals(items, settings);
@@ -272,7 +290,7 @@ export class FirebaseDriver implements StoreDriver {
 
       const order: Order = {
         id: orderRef.id,
-        number: `VN-${1000 + counter}`,
+        number: makeOrderNumber(counter),
         uid: input.uid ?? null,
         customer: input.customer,
         items,
@@ -293,7 +311,14 @@ export class FirebaseDriver implements StoreDriver {
       tx.set(orderRef, order);
       tx.set(counterRef, { value: counter }, { merge: true });
       tx.set(idemRef, { orderId: orderRef.id, createdAt: now });
-      for (const stock of nextStocks) tx.update(stock.ref, stock.data);
+      // تحديث واحد لكل منتج بعد تراكم كل الخصومات عليه
+      for (const [productId, next] of nextByProduct) {
+        tx.update(this.db.collection(C.products).doc(productId), {
+          variants: next.variants,
+          stock: next.stock,
+          updatedAt: now,
+        });
+      }
       created = order;
     });
 
@@ -609,8 +634,17 @@ export class FirebaseDriver implements StoreDriver {
     try {
       const match = url.match(/\/o\/([^?]+)/);
       if (!match) return;
-      const path = decodeURIComponent(match[1]);
-      await this.admin.storage().bucket(bucketName).file(path).delete({ ignoreNotFound: true });
+      let objectPath: string;
+      try {
+        objectPath = decodeURIComponent(match[1]);
+      } catch {
+        return; // مسار مُرمَّز بشكل خاطئ — نتجاهل بهدوء
+      }
+      // منع حذف أي كائن خارج مجلد رفعنا: لا مسار مطلق ولا شرائح ".."
+      // ولا بد أن يبدأ بمجلد المتجر `velunora/` (نفس ما يستخدمه saveUpload).
+      if (!objectPath.startsWith("velunora/")) return;
+      if (objectPath.includes("..") || objectPath.startsWith("/")) return;
+      await this.admin.storage().bucket(bucketName).file(objectPath).delete({ ignoreNotFound: true });
     } catch {
       /* فشل حذف الملف لا يعطّل العمل */
     }

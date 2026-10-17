@@ -27,6 +27,13 @@ function newUid(): string {
   return `usr_${crypto.randomUUID()}`;
 }
 
+/**
+ * يضمن وجود سجل عميل للحساب دون المساس ببياناته المحفوظة.
+ *
+ * مهم: لا نستبدل `name` أو `phone` عند كل تسجيل دخول — بعض مزوّدي الدخول
+ * (Firebase/Google) لا يُرجعان رقم الجوال، والقيم الفارغة كانت تمحو ما أدخله
+ * العميل سابقًا. نستبدل فقط بقيمة جديدة صريحة وغير فارغة.
+ */
 async function ensureCustomer(input: {
   uid: string;
   email: string;
@@ -36,11 +43,16 @@ async function ensureCustomer(input: {
   const db = await getDriver();
   const existing = await db.getCustomer(input.uid);
   const now = Date.now();
+
+  const explicitName = (input.name || "").trim();
+  const explicitPhone = (input.phone || "").trim();
+
   await db.upsertCustomer({
     uid: input.uid,
     email: normalizeEmail(input.email),
-    name: input.name?.trim() || input.email.split("@")[0],
-    phone: input.phone?.trim() || "",
+    // القيمة الجديدة إن وُجدت، وإلا المحفوظة، وإلا اسم من البريد (للإنشاء الجديد فقط)
+    name: explicitName || existing?.name || input.email.split("@")[0],
+    phone: explicitPhone || existing?.phone || "",
     city: existing?.city || "",
     address: existing?.address || "",
     emailVerified: existing?.emailVerified ?? false,
@@ -66,7 +78,7 @@ async function localRegister(input: {
 }): Promise<AuthResult> {
   const email = normalizeEmail(input.email);
   if (!isValidEmail(email)) throw badRequest("البريد الإلكتروني غير صحيح", "validation");
-  if (!isValidPassword(input.password)) throw badRequest("كلمة المرور يجب أن تكون 6 أحرف على الأقل", "weak_password");
+  if (!isValidPassword(input.password)) throw badRequest("كلمة المرور يجب أن تكون 8 أحرف على الأقل", "weak_password");
 
   const db = await getDriver();
   const existing = await db.getCustomerByEmail(email);
@@ -97,6 +109,19 @@ async function firebaseAdmin() {
   return getFirebaseAdmin();
 }
 
+/**
+ * رموز Firebase التي تعني «بيانات دخول غير صحيحة».
+ * نترجمها جميعًا إلى رسالة عربية موحّدة ولا نكشف أيّها حدث (منع enumeration).
+ */
+const FIREBASE_CREDENTIAL_ERRORS = new Set([
+  "EMAIL_NOT_FOUND",
+  "INVALID_PASSWORD",
+  "INVALID_LOGIN_CREDENTIALS",
+  "INVALID_EMAIL",
+  "MISSING_PASSWORD",
+  "USER_DISABLED",
+]);
+
 async function firebaseREST(path: string, body: Record<string, unknown>) {
   const res = await fetch(`https://identitytoolkit.googleapis.com/v1/${path}?key=${FIREBASE_WEB_CONFIG.apiKey}`, {
     method: "POST",
@@ -106,10 +131,32 @@ async function firebaseREST(path: string, body: Record<string, unknown>) {
   });
   const data = (await res.json().catch(() => ({}))) as Record<string, unknown> & { error?: { message?: string } };
   if (!res.ok) {
-    const code = String(data?.error?.message || "UNKNOWN");
-    throw badRequest(code, code.includes("PASSWORD") || code.includes("EMAIL_NOT_FOUND") ? "invalid_credentials" : "validation");
+    // مثال: "INVALID_LOGIN_CREDENTIALS" أو "WEAK_PASSWORD : Password should be at least 8 characters"
+    const raw = String(data?.error?.message || "UNKNOWN");
+    const code = raw.split(":")[0]!.trim();
+    if (FIREBASE_CREDENTIAL_ERRORS.has(code)) {
+      // رسالة موحّدة: لا نكشف إن كان البريد غير موجود أم كلمة المرور خاطئة
+      throw badRequest("بيانات الدخول غير صحيحة", "invalid_credentials");
+    }
+    // لا يُسرَّب رمز Firebase الخام للمستخدم؛ يُسجَّل على الخادم فقط
+    console.error("[velunora] firebase error:", raw);
+    throw badRequest("تعذّر إكمال العملية، حاول لاحقًا", "firebase_error");
   }
   return data;
+}
+
+/**
+ * يزيد نسخة إبطال الجلسات للحساب، فتصبح كل الجلسات القائمة (على كل الأجهزة)
+ * غير صالحة فورًا. تُستدعى عند تغيير/إعادة تعيين كلمة المرور وعند تعطيل الحساب.
+ * تُعيد النسخة الجديدة (لإعادة إصدار جلسة الجهاز الحالي).
+ */
+export async function bumpSessionVersion(uid: string): Promise<number> {
+  const db = await getDriver();
+  const profile = await db.getCustomer(uid);
+  if (!profile) return 0;
+  const next = (profile.sessionVersion ?? 0) + 1;
+  await db.upsertCustomer({ ...profile, sessionVersion: next, updatedAt: Date.now() });
+  return next;
 }
 
 async function firebaseRegister(input: {
@@ -120,7 +167,7 @@ async function firebaseRegister(input: {
 }): Promise<AuthResult> {
   const email = normalizeEmail(input.email);
   if (!isValidEmail(email)) throw badRequest("البريد الإلكتروني غير صحيح", "validation");
-  if (!isValidPassword(input.password)) throw badRequest("كلمة المرور يجب أن تكون 6 أحرف على الأقل", "weak_password");
+  if (!isValidPassword(input.password)) throw badRequest("كلمة المرور يجب أن تكون 8 أحرف على الأقل", "weak_password");
 
   const admin = await firebaseAdmin();
   try {
@@ -226,14 +273,15 @@ export async function sendReset(email: string): Promise<AuthResult> {
 /**
  * تغيير كلمة مرور الحساب الحالي (عميل أو مدير — الحساب واحد).
  * يتحقق من كلمة المرور الحالية قبل التعيين، ولا يعتمد على البريد.
+ * يُعيد نسخة إبطال الجلسة الجديدة (لإعادة إصدار جلسة الجهاز الحالي فقط).
  */
 export async function changePassword(
   uid: string,
   currentPassword: string,
   newPassword: string
-): Promise<void> {
+): Promise<number> {
   if (!isValidPassword(newPassword)) {
-    throw badRequest("كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل", "weak_password");
+    throw badRequest("كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل", "weak_password");
   }
   if (!currentPassword) throw badRequest("أدخل كلمة المرور الحالية", "validation");
   if (currentPassword === newPassword) {
@@ -253,7 +301,8 @@ export async function changePassword(
     });
     const admin = await firebaseAdmin();
     await admin.auth().updateUser(uid, { password: newPassword });
-    return;
+    // إبطال الجلسات القديمة على كل الأجهزة
+    return bumpSessionVersion(uid);
   }
 
   const secret = await db.getAuthSecret(uid);
@@ -261,10 +310,12 @@ export async function changePassword(
     throw badRequest("كلمة المرور الحالية غير صحيحة", "invalid_credentials");
   }
   await db.saveAuthSecret(uid, hashPassword(newPassword));
+  // إبطال الجلسات القديمة على كل الأجهزة
+  return bumpSessionVersion(uid);
 }
 
 export async function resetPassword(token: string, password: string): Promise<void> {
-  if (!isValidPassword(password)) throw badRequest("كلمة المرور يجب أن تكون 6 أحرف على الأقل", "weak_password");
+  if (!isValidPassword(password)) throw badRequest("كلمة المرور يجب أن تكون 8 أحرف على الأقل", "weak_password");
   if (STORAGE_DRIVER === "firebase") {
     throw badRequest(
       "إعادة التعيين في وضع Firebase تتم عبر رابط البريد الذي ترسله Firebase، افتح الرابط من بريدك.",
@@ -277,6 +328,8 @@ export async function resetPassword(token: string, password: string): Promise<vo
   const profile = await db.getCustomer(uid);
   if (!profile) throw badRequest("الحساب غير موجود", "invalid_token");
   await db.saveAuthSecret(uid, hashPassword(password));
+  // إبطال كل الجلسات القديمة بعد إعادة التعيين
+  await bumpSessionVersion(uid);
 }
 
 export async function sendVerification(uid: string): Promise<{ devLink?: string; mailSent?: boolean }> {

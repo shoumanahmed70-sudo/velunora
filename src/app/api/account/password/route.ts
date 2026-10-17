@@ -1,5 +1,6 @@
 import { changePassword } from "@/lib/server/auth-service";
 import { getAdminDoc, requireUserApi } from "@/lib/server/guard";
+import { setSessionCookie } from "@/lib/server/session";
 import { logAdminAction } from "@/lib/server/audit";
 import { json, readJson, route } from "@/lib/server/http";
 import { badRequest, tooMany } from "@/lib/server/errors";
@@ -32,6 +33,10 @@ export const POST = route(async (request: Request) => {
   if (newPassword.length > 128) throw badRequest("كلمة المرور طويلة جدًا", "validation");
 
   await changePassword(uid, currentPassword, newPassword);
+
+  // نُبطل كل الجلسات القديمة (كل الأجهزة)، ثم نُعيد إصدار جلسة هذا الجهاز
+  // بالنسخة الجديدة حتى لا يُطرد المستخدم الحالي بعد التغيير.
+  await setSessionCookie(uid);
 
   const admin = await getAdminDoc(uid);
   if (admin) await logAdminAction(admin, "admin.password_change", uid, "");

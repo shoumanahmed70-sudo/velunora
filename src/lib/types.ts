@@ -118,6 +118,13 @@ export interface Order {
   statusUpdatedAt: number | null;
 }
 
+/**
+ * الطلب كما يُعرض للعميل: بلا ملاحظات الإدارة (`internalNotes`) أو مفتاح منع
+ * التكرار (`idempotencyKey`). تستخدمه كل المسارات العامة ومسارات العميل، بينما
+ * تبقى مسارات `/api/admin/*` على النوع الكامل `Order`.
+ */
+export type PublicOrder = Omit<Order, "internalNotes" | "idempotencyKey">;
+
 export interface CustomerProfile {
   uid: string;
   email: string;
@@ -127,6 +134,12 @@ export interface CustomerProfile {
   address: string;
   emailVerified: boolean;
   disabled: boolean;
+  /**
+   * نسخة إبطال الجلسات: تُقارن مع الحقل `ver` في الكوكي. تزداد عند تغيير/إعادة
+   * تعيين كلمة المرور وعند تعطيل الحساب فتُبطَل كل الجلسات القديمة فورًا.
+   * السجلات القديمة بلا هذا الحقل تُعامل كنسخة 0 (لا يُطرد أحد بعد التحديث).
+   */
+  sessionVersion?: number;
   createdAt: number;
   updatedAt: number;
 }
@@ -195,10 +208,22 @@ export interface PrivateSettings {
     port: number;
     secure: boolean;
     user: string;
+    /**
+     * كلمة السر مخزّنة **مشفّرة** (AES-256-GCM) عبر SETTINGS_ENCRYPTION_KEY،
+     * ولا تُعاد للواجهة أبدًا. انظر `PrivateSettingsView`.
+     */
     pass: string;
     from: string;
   };
 }
+
+/**
+ * نسخة الإعدادات الخاصة المرسلة للواجهة: بلا كلمة سر SMTP، مع علم بوجودها فقط.
+ * تُستخدم في GET/PUT لمسار `/api/admin/settings/private`.
+ */
+export type PrivateSettingsView = Omit<PrivateSettings, "smtp"> & {
+  smtp: Omit<PrivateSettings["smtp"], "pass"> & { hasPassword: boolean };
+};
 
 export interface Banner {
   id: string;

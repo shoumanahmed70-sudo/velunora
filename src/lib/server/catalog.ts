@@ -61,7 +61,8 @@ export async function getPublicStore(): Promise<PublicStore> {
     settings,
     home,
     categories: categories.filter((c) => c.active),
-    // الرابط يُبنى على الخادم؛ الرقم نفسه لا يُرسل للواجهة
+    // الرابط يُبنى على الخادم. ملاحظة: الرقم يتضمّن ضمن رابط wa.me (واتساب يحتاجه)،
+    // لكن كائن الإعدادات الخاصة لا يُرسل للواجهة إطلاقًا.
     contactWaUrl: buildWaUrl(priv.whatsappNumber, buildContactMessage(settings)),
     googleAuthEnabled: GOOGLE_AUTH_ENABLED,
     firebaseConfig: FIREBASE_ENABLED ? FIREBASE_WEB_CONFIG : null,

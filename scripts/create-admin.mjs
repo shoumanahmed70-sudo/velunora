@@ -25,7 +25,7 @@ const active = args.inactive !== true;
 const explicitUid = typeof args.uid === "string" ? args.uid : "";
 
 if (!isValidEmail(email)) fail("البريد الإلكتروني مطلوب وصحيح: --email owner@example.com");
-if (password && password.length < 6) fail("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
+if (password && password.length < 8) fail("كلمة المرور يجب أن تكون 8 أحرف على الأقل");
 
 async function runLocal() {
   const now = Date.now();

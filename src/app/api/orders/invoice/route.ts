@@ -5,6 +5,7 @@ import { buildInvoiceHtml, buildInvoiceText } from "@/lib/server/invoice";
 import { asString, json, readJson, route } from "@/lib/server/http";
 import { badRequest, notFound, tooMany } from "@/lib/server/errors";
 import { clientIp, rateLimit } from "@/lib/server/ratelimit";
+import { normalizePhone, phonesMatch } from "@/lib/server/phone";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,18 +16,19 @@ interface Body {
   email?: string;
 }
 
-function lastDigitsPhone(value: string): string {
-  return (value || "").replace(/\D/g, "").slice(-9);
-}
-
 function isEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 /**
  * إرسال فاتورة الطلب إلى البريد.
- * التحقق: صاحب الجلسة (صاحب الطلب) أو مطابقة رقم الجوال مع رقم الطلب.
- * لا يُرسل أي بريد إلا بعد التحقق؛ ولا يُخترع «نجاح» إن كان البريد غير مُعدّ.
+ *
+ * التحقق: صاحب الجلسة (صاحب الطلب) أو مطابقة رقم الجوال مع رقم الطلب (تطابق كامل).
+ * سياسة البريد:
+ *  - المالك المسجّل (صاحب الطلب في الجلسة): يجوز له تحديد بريد آخر.
+ *  - غير المالك (تحقق بالجوال فقط): تُرسَل الفاتورة **فقط** إلى البريد المسجّل في
+ *    الطلب، ولا يمكنه تحديد بريد حرّ (منع استخدام الموقع كرُخّاصة إرسال بريد).
+ * لا يُخترع «نجاح» إن كان البريد غير مُعدّ.
  */
 export const POST = route(async (request: Request) => {
   const limit = rateLimit(`invoice:${clientIp(request)}`, 10, 10 * 60);
@@ -45,12 +47,21 @@ export const POST = route(async (request: Request) => {
 
   const session = await getSession();
   const isOwner = Boolean(session && order.uid && session.uid === order.uid);
-  const phoneOk =
-    phone.replace(/\D/g, "").length >= 8 && lastDigitsPhone(order.customer.phone) === lastDigitsPhone(phone);
+  const phoneOk = normalizePhone(phone).length >= 8 && phonesMatch(order.customer.phone, phone);
   if (!isOwner && !phoneOk) throw notFound("لم يتم العثور على الطلب");
 
-  const to = email || (order.customer.email || "").trim().toLowerCase();
-  if (!to) throw badRequest("لا يوجد بريد مرتبط بالطلب. أدخل بريدك الإلكتروني.", "validation");
+  const registered = (order.customer.email || "").trim().toLowerCase();
+  // المالك فقط يستطيع تحديد بريد حرّ؛ غيره يُقيَّد بالبريد المسجّل في الطلب
+  const to = isOwner ? email || registered : registered;
+
+  if (!to) {
+    throw badRequest(
+      isOwner
+        ? "لا يوجد بريد مرتبط بالطلب. أدخل بريدك الإلكتروني."
+        : "لا يوجد بريد مسجّل في هذا الطلب. سجّل الدخول بحسابك لإرسال الفاتورة إلى بريد آخر.",
+      "validation"
+    );
+  }
   if (!isEmail(to)) throw badRequest("صيغة البريد الإلكتروني غير صحيحة", "validation");
 
   const settings = await db.getSettings();

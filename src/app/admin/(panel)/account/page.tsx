@@ -32,8 +32,8 @@ export default function AdminAccountPage() {
       setError("أدخل كلمة المرور الحالية");
       return;
     }
-    if (next.length < 6) {
-      setError("كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل");
+    if (next.length < 8) {
+      setError("كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل");
       return;
     }
     if (next !== confirm) {
@@ -104,7 +104,7 @@ export default function AdminAccountPage() {
             </Field>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="كلمة المرور الجديدة" required hint="6 أحرف على الأقل">
+              <Field label="كلمة المرور الجديدة" required hint="8 أحرف على الأقل">
                 <input
                   className={`${inputCls} text-start`}
                   dir="ltr"

@@ -1,5 +1,6 @@
 import { getDriver } from "@/lib/store";
 import { requireAdminApi } from "@/lib/server/guard";
+import { bumpSessionVersion } from "@/lib/server/auth-service";
 import { logAdminAction } from "@/lib/server/audit";
 import { json, readJson, route } from "@/lib/server/http";
 import { badRequest, notFound } from "@/lib/server/errors";
@@ -35,6 +36,8 @@ export const PUT = route(async (request: Request, context: { params: Promise<{ u
 
   const db = await getDriver();
   const profile = await db.setCustomerDisabled(uid, body.disabled);
+  // عند التعطيل نُبطل كل جلسات الحساب فورًا حتى لا يبقى دخوله قائمًا
+  if (body.disabled) await bumpSessionVersion(uid);
   await logAdminAction(admin, body.disabled ? "customer.disable" : "customer.enable", uid, {
     email: profile.email,
   });

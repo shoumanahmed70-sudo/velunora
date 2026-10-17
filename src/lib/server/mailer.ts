@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getDriver } from "@/lib/store";
+import { decryptSecret } from "@/lib/server/settings-crypto";
 
 /**
  * إرسال البريد عبر SMTP المُعدّ من لوحة الإدارة (إعدادات خاصة).
@@ -20,7 +21,19 @@ export interface MailResult {
   error?: string;
 }
 
-function wrapHtml(storeName: string, title: string, bodyHtml: string, cta?: { label: string; url: string }) {
+/** تهريب نص قبل وضعه في HTML (يمنع حقن الوسوم عبر اسم المتجر أو أي مدخل). */
+export function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function wrapHtml(storeNameRaw: string, titleRaw: string, bodyHtml: string, cta?: { label: string; url: string }) {
+  const storeName = escapeHtml(storeNameRaw);
+  const title = escapeHtml(titleRaw);
   return `<!doctype html><html dir="rtl" lang="ar"><body style="margin:0;background:#f7f1e7;font-family:Tahoma,Arial,sans-serif;color:#241238">
   <div style="max-width:560px;margin:0 auto;padding:28px 20px">
     <div style="background:#2d1b4e;color:#fff;border-radius:16px 16px 0 0;padding:20px 24px">
@@ -31,8 +44,8 @@ function wrapHtml(storeName: string, title: string, bodyHtml: string, cta?: { la
       ${bodyHtml}
       ${
         cta
-          ? `<p style="margin:22px 0"><a href="${cta.url}" style="display:inline-block;background:#c6a15b;color:#241238;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:bold">${cta.label}</a></p>
-             <p style="font-size:12px;color:#6f6484;word-break:break-all">إن لم يعمل الزر انسخ الرابط التالي:<br/>${cta.url}</p>`
+          ? `<p style="margin:22px 0"><a href="${escapeHtml(cta.url)}" style="display:inline-block;background:#c6a15b;color:#241238;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:bold">${escapeHtml(cta.label)}</a></p>
+             <p style="font-size:12px;color:#6f6484;word-break:break-all">إن لم يعمل الزر انسخ الرابط التالي:<br/>${escapeHtml(cta.url)}</p>`
           : ""
       }
       <hr style="border:none;border-top:1px solid #e8e0d2;margin:20px 0"/>
@@ -53,11 +66,13 @@ export async function sendMail(input: MailInput): Promise<MailResult> {
 
   try {
     const nodemailer = await import("nodemailer");
+    // كلمة السر تُفكّ عند الإرسال فقط (مخزّنة مشفّرة، وتُقرأ القيم القديمة غير المشفّرة أيضًا)
+    const pass = decryptSecret(smtp.pass);
     const transporter = nodemailer.createTransport({
       host: smtp.host,
       port: smtp.port || 587,
       secure: Boolean(smtp.secure),
-      auth: smtp.user ? { user: smtp.user, pass: smtp.pass } : undefined,
+      auth: smtp.user ? { user: smtp.user, pass } : undefined,
       connectionTimeout: 10_000,
       greetingTimeout: 10_000,
     });
@@ -77,25 +92,27 @@ export async function sendMail(input: MailInput): Promise<MailResult> {
   }
 }
 
-export function resetEmailTemplate(storeName: string, link: string, minutes: number) {
+export function resetEmailTemplate(storeNameRaw: string, link: string, minutes: number) {
+  const storeName = escapeHtml(storeNameRaw);
   return {
-    subject: `إعادة تعيين كلمة المرور — ${storeName}`,
+    subject: `إعادة تعيين كلمة المرور — ${String(storeNameRaw)}`,
     html: wrapHtml(
-      storeName,
+      storeNameRaw,
       "إعادة تعيين كلمة المرور",
-      `<p style="line-height:1.9;font-size:14px">طلبت إعادة تعيين كلمة المرور لحسابك. الرابط صالح لمدة ${minutes} دقيقة ويُستخدم مرة واحدة.</p>`,
+      `<p style="line-height:1.9;font-size:14px">طلبت إعادة تعيين كلمة المرور لحسابك. الرابط صالح لمدة ${Number(minutes) || 0} دقيقة ويُستخدم مرة واحدة.</p>`,
       { label: "إعادة تعيين كلمة المرور", url: link }
     ),
   };
 }
 
-export function verifyEmailTemplate(storeName: string, link: string, minutes: number) {
+export function verifyEmailTemplate(storeNameRaw: string, link: string, minutes: number) {
+  const storeName = escapeHtml(storeNameRaw);
   return {
-    subject: `تأكيد البريد الإلكتروني — ${storeName}`,
+    subject: `تأكيد البريد الإلكتروني — ${String(storeNameRaw)}`,
     html: wrapHtml(
-      storeName,
+      storeNameRaw,
       "تأكيد البريد الإلكتروني",
-      `<p style="line-height:1.9;font-size:14px">شكرًا لتسجيلك في ${storeName}. أكّد بريدك الإلكتروني لإكمال إعداد حسابك. الرابط صالح لمدة ${minutes} دقيقة.</p>`,
+      `<p style="line-height:1.9;font-size:14px">شكرًا لتسجيلك في ${storeName}. أكّد بريدك الإلكتروني لإكمال إعداد حسابك. الرابط صالح لمدة ${Number(minutes) || 0} دقيقة.</p>`,
       { label: "تأكيد البريد", url: link }
     ),
   };

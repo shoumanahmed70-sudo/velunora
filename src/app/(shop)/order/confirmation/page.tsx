@@ -7,7 +7,7 @@ import { useApi, errorMessage } from "@/lib/api-client";
 import { useMe } from "@/lib/auth-provider";
 import { readLastOrder } from "@/lib/local-store";
 import { formatMoney } from "@/lib/money";
-import type { Order } from "@/lib/types";
+import type { PublicOrder } from "@/lib/types";
 import { useStoreSafe } from "@/components/shop/hooks";
 import { EmptyState } from "@/components/shop/EmptyState";
 import { OrderInvoice } from "@/components/shop/OrderInvoice";
@@ -16,7 +16,7 @@ import { STATUS_TONE, statusLabelKey } from "@/components/shop/orderStatus";
 import { L, PLACEHOLDER, productImage } from "@/components/shop/utils";
 
 interface LookupResponse {
-  order: Order;
+  order: PublicOrder;
   /** يوفّره الخادم لفتح واتساب؛ لا يُبنى يدويًا في الواجهة. */
   waUrl?: string;
   waMessage?: string;
@@ -30,7 +30,7 @@ interface LastOrder {
   waMessage?: string;
 }
 
-function buildFallbackMessage(order: Order, storeName: string, symbol: string): string {
+function buildFallbackMessage(order: PublicOrder, storeName: string, symbol: string): string {
   const money = (n: number) => `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(n)} ${symbol}`;
   const lines: string[] = [];
   lines.push(`*طلب جديد — ${storeName}*`);
@@ -59,7 +59,7 @@ export default function OrderConfirmationPage() {
   const uid = me?.user?.uid ?? null;
   const { settings, contactWaUrl } = useStoreSafe();
 
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<PublicOrder | null>(null);
   const [waUrl, setWaUrl] = useState("");
   const [waMessage, setWaMessage] = useState("");
   const [phone, setPhone] = useState("");

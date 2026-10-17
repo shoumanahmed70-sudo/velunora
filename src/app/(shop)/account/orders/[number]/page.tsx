@@ -7,7 +7,7 @@ import { useLang, useT } from "@/lib/i18n/provider";
 import { useMe } from "@/lib/auth-provider";
 import { useApi, errorMessage } from "@/lib/api-client";
 import { formatMoney } from "@/lib/money";
-import type { Order } from "@/lib/types";
+import type { PublicOrder } from "@/lib/types";
 import { useStoreSafe } from "@/components/shop/hooks";
 import { EmptyState } from "@/components/shop/EmptyState";
 import { OrderInvoice } from "@/components/shop/OrderInvoice";
@@ -38,7 +38,7 @@ export default function AccountOrderDetailPage() {
   const { me, loading: meLoading } = useMe();
   const { settings } = useStoreSafe();
 
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<PublicOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -55,7 +55,7 @@ export default function AccountOrderDetailPage() {
       setLoading(true);
       setError("");
       try {
-        const res = await api.get<{ order: Order }>(`/api/account/orders/${encodeURIComponent(number)}`);
+        const res = await api.get<{ order: PublicOrder }>(`/api/account/orders/${encodeURIComponent(number)}`);
         if (!cancelled) setOrder(res.order);
       } catch (err) {
         if (!cancelled) setError(errorMessage(err, t("errGeneric")));

@@ -17,7 +17,7 @@ import {
   inputCls,
 } from "@/components/admin/ui";
 import type {
-  PrivateSettings,
+  PrivateSettingsView,
   StoreColors,
   StoreSettings,
 } from "@/lib/types";
@@ -79,7 +79,9 @@ export default function SettingsPage() {
 
   const [tab, setTab] = useState<TabId>("identity");
   const [settings, setSettings] = useState<StoreSettings | null>(null);
-  const [priv, setPriv] = useState<PrivateSettings | null>(null);
+  const [priv, setPriv] = useState<PrivateSettingsView | null>(null);
+  // كلمة سر SMTP لا تُقرأ من الخادم أبدًا؛ هذا حقل كتابة فقط (فارغ = أبقِ المخزّنة)
+  const [smtpPass, setSmtpPass] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
@@ -106,8 +108,9 @@ export default function SettingsPage() {
       setSettings(res.settings);
       if (isOwner) {
         try {
-          const p = await api.get<{ private: PrivateSettings }>("/api/admin/settings/private");
+          const p = await api.get<{ private: PrivateSettingsView }>("/api/admin/settings/private");
           setPriv(p.private);
+          setSmtpPass("");
         } catch {
           setPriv(null);
         }
@@ -179,8 +182,13 @@ export default function SettingsPage() {
     }
     setSaving("private");
     try {
-      const res = await api.put<{ private: PrivateSettings }>("/api/admin/settings/private", priv);
+      const res = await api.put<{ private: PrivateSettingsView }>("/api/admin/settings/private", {
+        ...priv,
+        // كلمة السر تُرسل فقط إن كتبها المدير؛ الفارغة تعني «أبقِ المخزّنة»
+        smtp: { ...priv.smtp, pass: smtpPass },
+      });
       setPriv(res.private);
+      setSmtpPass("");
       toast("تم حفظ إعدادات واتساب والبريد", "success");
       flash("private");
     } catch (err) {
@@ -658,8 +666,9 @@ export default function SettingsPage() {
                   />
                 </Field>
                 <p className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs leading-6 text-red-800">
-                  تنبيه: هذا هو الرقم الذي تُرسَل إليه طلبات العملاء عبر واتساب. لا يظهر هذا الرقم في واجهة
-                  المتجر أبدًا؛ تُبنى روابط واتساب على الخادم دون كشف الرقم للزائر.
+                  تنبيه: هذا هو الرقم الذي تُرسَل إليه طلبات العملاء عبر واتساب. لا يُرسَل الرقم كحقل منفصل
+                  للواجهة إطلاقًا؛ تُبنى روابط واتساب على الخادم فقط. لكن انتبه: أي رابط واتساب (wa.me) يتضمّن
+                  الرقم بطبيعته لأنه ضروري لفتح المحادثة.
                 </p>
               </Panel>
 
@@ -704,15 +713,22 @@ export default function SettingsPage() {
                       }
                     />
                   </Field>
-                  <Field label="كلمة المرور" hint="تُخزَّن في قاعدة البيانات ولا تظهر لأي عميل">
+                  <Field
+                    label="كلمة المرور"
+                    hint={
+                      priv.smtp.hasPassword
+                        ? "كلمة مرور محفوظة (مشفّرة). اتركها فارغة للإبقاء عليها، أو اكتب كلمة جديدة للتغيير."
+                        : "لا توجد كلمة مرور محفوظة — اكتب كلمة المرور (تُخزَّن مشفّرة)."
+                    }
+                  >
                     <input
                       type="password"
                       className={inputCls}
                       dir="ltr"
-                      value={priv.smtp.pass}
-                      onChange={(e) =>
-                        setPriv((p) => (p ? { ...p, smtp: { ...p.smtp, pass: e.target.value } } : p))
-                      }
+                      autoComplete="new-password"
+                      value={smtpPass}
+                      placeholder={priv.smtp.hasPassword ? "••••••••" : ""}
+                      onChange={(e) => setSmtpPass(e.target.value)}
                     />
                   </Field>
                   <Field label="البريد المُرسِل (From)">

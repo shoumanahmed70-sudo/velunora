@@ -5,6 +5,7 @@ import { badRequest, forbidden, tooMany } from "@/lib/server/errors";
 import { clientIp, rateLimit } from "@/lib/server/ratelimit";
 import { buildOrderMessage, buildWaUrl } from "@/lib/server/whatsapp";
 import { isValidPhone } from "@/lib/server/credentials";
+import { toPublicOrder } from "@/lib/server/public-order";
 import type { CartLine } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -100,8 +101,9 @@ export const POST = route(async (request: Request) => {
   }
 
   const [settings, priv] = await Promise.all([db.getSettings(), db.getPrivateSettings()]);
+  // رسالة واتساب تُبنى على الطلب الكامل (للمدير)، والرد للعميل بلا حقول إدارية
   const message = buildOrderMessage(order, settings);
   const waUrl = buildWaUrl(priv.whatsappNumber, message);
 
-  return json({ order, waUrl, waMessage: message, duplicate });
+  return json({ order: toPublicOrder(order), waUrl, waMessage: message, duplicate });
 });

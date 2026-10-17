@@ -33,7 +33,8 @@ import {
   defaultPrivateSettings,
   defaultSettings,
 } from "@/lib/store/defaults";
-import { assertMinOrder, buildOrderItem, computeTotals, PricingError, round2 } from "@/lib/server/pricing";
+import { assertMinOrder, buildOrderItem, computeTotals, mergeOrderLines, PricingError, round2 } from "@/lib/server/pricing";
+import { makeOrderNumber } from "@/lib/server/order-number";
 
 /**
  * محرّك التخزين المحلي — للتطوير والاختبار والاستضافة الذاتية.
@@ -318,29 +319,34 @@ export class LocalDriver implements StoreDriver {
       if (!settings.ordersEnabled) throw new PricingError("الطلبات متوقفة حاليًا", "orders_paused");
       if (!input.items?.length) throw new PricingError("السلة فارغة", "validation");
 
+      // دمج البنود المتطابقة قبل أي فحص أو خصم (يمنع تجاوز المخزون ببنود مكرّرة)
+      const lines = mergeOrderLines(input.items);
+
       const items: OrderItem[] = [];
-      for (const line of input.items) {
+      for (const line of lines) {
         const product = products.find((p) => p.id === line.productId);
         if (!product || !product.active) throw new PricingError("أحد المنتجات غير متوفر", "validation");
-        items.push(buildOrderItem(product, line.variantId, line.options || {}, line.qty));
+        // buildOrderItem يتحقق من المخزون مقابل الكمية المتراكمة قبل أي كتابة
+        items.push(buildOrderItem(product, line.variantId ?? null, line.options || {}, line.qty));
       }
 
       assertMinOrder(items, settings);
       const totals = computeTotals(items, settings);
 
-      // خصم المخزون (تحقق مسبق كامل قبل أي كتابة)
+      // خصم المخزون (تحقق مسبق كامل تم أعلاه قبل أي كتابة)
       const updatedProducts = [...products];
       for (const item of items) {
         const idx = updatedProducts.findIndex((p) => p.id === item.productId);
+        if (idx < 0) continue;
         const product = { ...updatedProducts[idx] };
         if (item.variantId) {
           const variants = product.variants.map((v) =>
-            v.id === item.variantId ? { ...v, stock: round2(v.stock - item.qty) } : v
+            v.id === item.variantId ? { ...v, stock: Math.max(0, round2(v.stock - item.qty)) } : v
           );
           product.variants = variants;
-          product.stock = variants.reduce((s, v) => s + v.stock, 0);
+          product.stock = Math.max(0, round2(variants.reduce((s, v) => s + v.stock, 0)));
         } else {
-          product.stock = Math.max(0, product.stock - item.qty);
+          product.stock = Math.max(0, round2(product.stock - item.qty));
         }
         product.updatedAt = Date.now();
         updatedProducts[idx] = product;
@@ -350,7 +356,7 @@ export class LocalDriver implements StoreDriver {
       const now = Date.now();
       const order: Order = {
         id: `ord_${randomUUID()}`,
-        number: `VN-${1000 + counter}`,
+        number: makeOrderNumber(counter),
         uid: input.uid ?? null,
         customer: input.customer,
         items,
@@ -688,10 +694,17 @@ export class LocalDriver implements StoreDriver {
 
   async deleteUpload(url: string): Promise<void> {
     if (!url.startsWith("/api/files/")) return;
-    const relative = decodeURIComponent(url.replace("/api/files/", ""));
-    const full = path.resolve(UPLOAD_DIR, relative);
+    let relative: string;
+    try {
+      relative = decodeURIComponent(url.replace("/api/files/", ""));
+    } catch {
+      return; // رابط مُرمَّز بشكل خاطئ — نتجاهل بهدوء
+    }
     const root = path.resolve(UPLOAD_DIR);
-    if (!full.startsWith(root)) return; // منع الخروج عن المجلد
+    const full = path.resolve(root, relative);
+    // منع الخروج عن مجلد الرفع: نقارن بالجذر نفسه أو بما يبدأ بـ (الجذر + فاصل المسار)
+    // حتى لا يمر مسار مثل ".../uploads-evil/file" الذي كان يجتاز المقارنة القديمة بالسلسلة.
+    if (full !== root && !full.startsWith(root + path.sep)) return;
     await fs.rm(full, { force: true });
   }
 }

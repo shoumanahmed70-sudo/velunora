@@ -26,7 +26,7 @@ export const POST = route(async (request: Request) => {
   const phone = (body.phone || "").trim().slice(0, 25);
 
   if (name.length < 2) throw badRequest("الاسم مطلوب", "validation");
-  if (!isValidPassword(password)) throw badRequest("كلمة المرور يجب أن تكون 6 أحرف على الأقل", "weak_password");
+  if (!isValidPassword(password)) throw badRequest("كلمة المرور يجب أن تكون 8 أحرف على الأقل", "weak_password");
 
   const result = await register({ name, email, password, phone });
   await setSessionCookie(result.uid);

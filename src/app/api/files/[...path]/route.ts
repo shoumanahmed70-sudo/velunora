@@ -26,7 +26,13 @@ export const GET = route(async (_request: Request, context: { params: Promise<{ 
     return new Response("not available", { status: 404 });
   }
   const { path: segments } = await context.params;
-  const relative = segments.map((s) => decodeURIComponent(s)).join("/");
+  let relative: string;
+  try {
+    relative = segments.map((s) => decodeURIComponent(s)).join("/");
+  } catch {
+    // مسار مُرمَّز بشكل خاطئ (مثل %ZZ) — بدل أن يرمي استثناء غير متوقّع
+    return new Response("bad request", { status: 400 });
+  }
   const root = path.resolve(LOCAL_UPLOAD_ROOT);
   const full = path.resolve(root, relative);
 

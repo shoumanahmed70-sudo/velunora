@@ -96,7 +96,7 @@ export function errorMessage(err: unknown, fallback = "حدث خطأ، حاول 
       orders_paused: "الطلبات متوقفة حاليًا",
       email_exists: "هذا البريد مسجّل بالفعل",
       invalid_credentials: "بيانات الدخول غير صحيحة",
-      weak_password: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+      weak_password: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
       invalid_token: "الرابط غير صالح أو منتهي",
       invalid_token_or_expired: "الرابط غير صالح أو منتهي",
       rate_limited: "محاولات كثيرة، انتظر قليلًا ثم أعد المحاولة",

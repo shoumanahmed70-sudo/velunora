@@ -41,8 +41,15 @@ export function route<T extends unknown[]>(
 
 /** قراءة جسم JSON مع حد أعلى للحجم */
 export async function readJson<T>(request: Request, maxBytes = 64 * 1024): Promise<T> {
+  // فحص مبكر عبر Content-Length (إن وُجد) لرفض الأحجام الكبيرة قبل قراءة الجسم
+  const declared = Number(request.headers.get("content-length") || 0);
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    throw new HttpError("حجم البيانات كبير جدًا", 413, "payload_too_large");
+  }
   const text = await request.text();
-  if (text.length > maxBytes) {
+  // القياس بالبايتات الفعلية: `text.length` يقيس الوحدات لا البايتات، والنص العربي
+  // (UTF-8) يأخذ أكثر من بايت لكل حرف، فنقيس بالبايت ليكون الحد دقيقًا.
+  if (Buffer.byteLength(text, "utf8") > maxBytes) {
     throw new HttpError("حجم البيانات كبير جدًا", 413, "payload_too_large");
   }
   if (!text) return {} as T;

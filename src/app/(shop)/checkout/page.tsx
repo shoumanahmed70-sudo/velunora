@@ -9,7 +9,7 @@ import { useMe } from "@/lib/auth-provider";
 import { useToast } from "@/lib/toast";
 import { useApi, errorMessage } from "@/lib/api-client";
 import { digitsOnly, formatMoney, normalizeDigits } from "@/lib/money";
-import type { Order, OrderCustomer } from "@/lib/types";
+import type { OrderCustomer, PublicOrder } from "@/lib/types";
 import { writeLastOrder } from "@/lib/local-store";
 import { useStoreSafe } from "@/components/shop/hooks";
 import { useCartDetails } from "@/components/shop/useCartDetails";
@@ -17,7 +17,7 @@ import { EmptyState } from "@/components/shop/EmptyState";
 import { L, PLACEHOLDER, localizedName, productImage } from "@/components/shop/utils";
 
 interface CreateOrderResponse {
-  order: Order;
+  order: PublicOrder;
   waUrl: string;
   waMessage: string;
 }
@@ -96,6 +96,16 @@ export default function CheckoutPage() {
     submittingRef.current = true;
     setSubmitting(true);
 
+    // نفتح تبويب واتساب مسبقًا داخل نقرة المستخدم نفسها.
+    // السبب: المتصفح يحجب النوافذ التي تُفتح بعد `await` (انتهاء صلاحية تفعيل المستخدم)،
+    // فنحجز التبويب الآن ونوجّهه إلى واتساب بعد نجاح الطلب. وإن فشل الطلب نُغلقه.
+    let waTab: Window | null = null;
+    try {
+      waTab = window.open("about:blank", "_blank");
+    } catch {
+      waTab = null;
+    }
+
     const customer: OrderCustomer = {
       name: name.trim(),
       phone: normalizeDigits(phone.trim()),
@@ -127,9 +137,41 @@ export default function CheckoutPage() {
         api.put("/api/account/cart", { lines: [] }).catch(() => undefined);
       }
 
+      // الانتقال المباشر إلى واتساب برسالة الطلب جاهزة (العميل يضغط «إرسال» فقط)
+      if (res.waUrl) {
+        if (waTab) {
+          try {
+            waTab.location.replace(res.waUrl);
+          } catch {
+            /* تجاهل: نبقى على صفحة التأكيد بزر واتساب */
+          }
+        } else {
+          // حُجبت النافذة المنبثقة — نحاول مرة أخرى؛ وصفحة التأكيد فيها الزر كبديل
+          try {
+            window.open(res.waUrl, "_blank", "noopener,noreferrer");
+          } catch {
+            /* تجاهل */
+          }
+        }
+      } else if (waTab) {
+        try {
+          waTab.close();
+        } catch {
+          /* تجاهل */
+        }
+      }
+
       toast(t("orderSuccessTitle"), "success");
       router.push("/order/confirmation");
     } catch (err) {
+      // لم يُنشأ الطلب — نُغلق تبويب واتساب الذي حجزناه
+      if (waTab) {
+        try {
+          waTab.close();
+        } catch {
+          /* تجاهل */
+        }
+      }
       setError(errorMessage(err, t("errGeneric")));
       submittingRef.current = false;
       setSubmitting(false);

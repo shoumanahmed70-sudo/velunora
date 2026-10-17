@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useLang, useT } from "@/lib/i18n/provider";
 import { useApi, errorMessage } from "@/lib/api-client";
 import { formatMoney, normalizeDigits } from "@/lib/money";
-import type { Order } from "@/lib/types";
+import type { PublicOrder } from "@/lib/types";
 import { useStoreSafe } from "@/components/shop/hooks";
 import { OrderInvoice } from "@/components/shop/OrderInvoice";
 import { STATUS_TONE, statusLabelKey } from "@/components/shop/orderStatus";
@@ -33,7 +33,7 @@ export default function OrderLookupPage() {
 
   const [number, setNumber] = useState("");
   const [phone, setPhone] = useState("");
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<PublicOrder | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -47,7 +47,7 @@ export default function OrderLookupPage() {
     }
     setLoading(true);
     try {
-      const res = await api.post<{ order: Order }>("/api/orders/lookup", {
+      const res = await api.post<{ order: PublicOrder }>("/api/orders/lookup", {
         number: number.trim(),
         phone: normalizeDigits(phone.trim()),
       });

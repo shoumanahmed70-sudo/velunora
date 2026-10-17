@@ -1,11 +1,12 @@
 import crypto from "node:crypto";
 import sharp from "sharp";
 import { getDriver } from "@/lib/store";
-import { requireAdminApi } from "@/lib/server/guard";
+import { ensureAdminPermission, requireAdminApi } from "@/lib/server/guard";
 import { logAdminAction } from "@/lib/server/audit";
 import { json, route } from "@/lib/server/http";
 import { badRequest } from "@/lib/server/errors";
 import { UPLOAD_ALLOWED_TYPES, UPLOAD_MAX_BYTES } from "@/lib/server/env";
+import type { AdminPermission } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,10 +15,28 @@ const ALLOWED_KINDS = ["product", "banner", "home", "logo", "favicon", "misc"];
 const MAX_FILES = 10;
 
 /**
+ * صلاحية الرفع المطلوبة بحسب نوع الصورة:
+ *  - product      → products
+ *  - home/banner  → home
+ *  - logo/favicon → settings
+ *  - misc         → أي صلاحية إدارية (يكفي أن يكون مديرًا نشطًا)
+ * هكذا لا يستطيع موظف بصلاحية "products" فقط تغيير شعار المتجر أو صور الصفحة الرئيسية.
+ */
+const PERMISSION_BY_KIND: Record<string, AdminPermission | null> = {
+  product: "products",
+  banner: "home",
+  home: "home",
+  logo: "settings",
+  favicon: "settings",
+  misc: null,
+};
+
+/**
  * رفع الصور (متعدد) إلى Firebase Storage أو المخزن المحلي.
  * كل صورة تُفحص (النوع/الحجم) وتُحوَّل إلى WebP مضغوط مع تصغير الأبعاد.
  */
 export const POST = route(async (request: Request) => {
+  // مصادقة أولية (أي صلاحية)، ثم نفحص الصلاحية المحدّدة بعد معرفة نوع الصورة
   const admin = await requireAdminApi();
 
   let form: FormData;
@@ -29,6 +48,8 @@ export const POST = route(async (request: Request) => {
 
   const kindRaw = String(form.get("kind") ?? "misc");
   const kind = ALLOWED_KINDS.includes(kindRaw) ? kindRaw : "misc";
+  const requiredPermission = PERMISSION_BY_KIND[kind];
+  if (requiredPermission) ensureAdminPermission(admin, requiredPermission);
   const files = form.getAll("files").filter((f): f is File => f instanceof File);
 
   if (files.length === 0) throw badRequest("لم يتم اختيار أي صورة", "validation");

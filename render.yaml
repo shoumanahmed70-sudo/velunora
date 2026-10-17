@@ -1,0 +1,40 @@
+# VELUNORA — نشر على Render.com (Docker + قرص دائم)
+#
+# الخطوات:
+#  1) أنشئ مستودعًا على GitHub وارفع المشروع (أو اربط المستودع الحالي).
+#  2) من Render: New → Blueprint → اختر المستودع. سيتعرّف على هذا الملف تلقائيًا.
+#  3) عيّن المتغيّرات السرّية عند الطلب: SESSION_SECRET وAPP_URL (وSETTINGS_ENCRYPTION_KEY إن استخدمت SMTP).
+#  4) ملاحظة: القرص الدائم (disk) متاح في الخطط المدفوعة. على الخطة المجانية
+#     تُفقد البيانات عند كل إعادة نشر/تشغيل — استخدم STORAGE_DRIVER=firebase بدلًا منها.
+#
+# بعد النشر: اضبط APP_URL على رابط الخدمة (مثال https://velunora.onrender.com).
+
+services:
+  - type: web
+    name: velunora
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /api/store
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: STORAGE_DRIVER
+        value: local
+      - key: HOSTNAME
+        value: 0.0.0.0
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: SETTINGS_ENCRYPTION_KEY
+        generateValue: true
+      - key: APP_URL
+        sync: false
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"
+      - key: NEXT_PUBLIC_ALLOW_DEV_RESET_LINKS
+        value: "false"
+    disk:
+      name: velunora-data
+      mountPath: /app/var
+      sizeGB: 1

@@ -75,7 +75,7 @@ export default function AccountPage() {
       setPwError(t("currentPassword"));
       return;
     }
-    if (pwNext.length < 6) {
+    if (pwNext.length < 8) {
       setPwError(t("weakPassword"));
       return;
     }

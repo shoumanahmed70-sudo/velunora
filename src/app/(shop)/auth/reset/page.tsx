@@ -31,7 +31,7 @@ function ResetForm() {
       setError(t("invalidResetLink"));
       return;
     }
-    if (password.length < 6) {
+    if (password.length < 8) {
       setError(t("weakPassword"));
       return;
     }

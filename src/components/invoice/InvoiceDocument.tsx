@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useT } from "@/lib/i18n/provider";
 import { formatMoney } from "@/lib/money";
-import type { Order, StoreSettings } from "@/lib/types";
+import type { PublicOrder, StoreSettings } from "@/lib/types";
 import { statusLabelKey } from "@/components/shop/orderStatus";
 import { L } from "@/components/shop/utils";
 
 interface Props {
-  order: Order;
+  order: PublicOrder;
   settings: StoreSettings | null;
   lang?: "ar" | "en";
 }

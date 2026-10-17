@@ -5,7 +5,13 @@ import { getDriver } from "@/lib/store";
 import { getSession } from "@/lib/server/session";
 import { forbidden, unauthorized } from "@/lib/server/errors";
 
-/** ذاكرة مؤقتة قصيرة لسجلات المدراء لتخفيف القراءات (٣٠ ثانية). */
+/**
+ * ذاكرة مؤقتة قصيرة لسجلات المدراء لتخفيف القراءات (٣٠ ثانية).
+ *
+ * تنبيه: هذه الذاكرة **محلية للنسخة الواحدة** من الخادم فقط. عند تشغيل أكثر من
+ * نسخة (توسّع أفقي/موازن تحميل) قد لا يرى تغيير صلاحيات مدير فورًا على النسخ
+ * الأخرى حتى انتهاء الـ30 ثانية. للحالات الحسّاسة استخدم Redis أو مخزنًا مشتركًا.
+ */
 const adminCache = new Map<string, { at: number; doc: AdminDoc | null }>();
 const CACHE_MS = 30_000;
 
@@ -29,13 +35,23 @@ export interface SessionUser {
   admin: AdminDoc | null;
 }
 
-/** المستخدم الحالي من الكوكي (+ كونه مديرًا نشطًا) */
+/** المستخدم الحالي من الكوكي (+ كونه مديرًا نشطًا). الجلسة مُتحقَّق من نسختها. */
 export async function getSessionUser(): Promise<SessionUser | null> {
   const session = await getSession();
   if (!session) return null;
   const admin = await getAdminDoc(session.uid);
   const activeAdmin = admin && admin.active ? admin : null;
   return { uid: session.uid, isAdmin: Boolean(activeAdmin), admin: activeAdmin };
+}
+
+/**
+ * فحص صلاحية مدير ويرمي 403 إن لم تتوفر.
+ * مالك المتجر (owner) يملك كل الصلاحيات دائمًا.
+ */
+export function ensureAdminPermission(admin: AdminDoc, permission: AdminPermission): void {
+  if (!hasPermission(admin, permission)) {
+    throw forbidden("ليست لديك صلاحية هذه العملية");
+  }
 }
 
 function hasPermission(admin: AdminDoc, permission?: AdminPermission): boolean {

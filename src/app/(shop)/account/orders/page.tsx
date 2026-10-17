@@ -7,7 +7,7 @@ import { useLang, useT } from "@/lib/i18n/provider";
 import { useMe } from "@/lib/auth-provider";
 import { useApi, errorMessage } from "@/lib/api-client";
 import { formatMoney } from "@/lib/money";
-import type { Order } from "@/lib/types";
+import type { PublicOrder } from "@/lib/types";
 import { useStoreSafe } from "@/components/shop/hooks";
 import { EmptyState } from "@/components/shop/EmptyState";
 import { STATUS_TONE, statusLabelKey } from "@/components/shop/orderStatus";
@@ -32,7 +32,7 @@ export default function AccountOrdersPage() {
   const { me, loading: meLoading } = useMe();
   const { settings } = useStoreSafe();
 
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<PublicOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -49,7 +49,7 @@ export default function AccountOrdersPage() {
       setLoading(true);
       setError("");
       try {
-        const res = await api.get<{ orders: Order[] }>("/api/account/orders");
+        const res = await api.get<{ orders: PublicOrder[] }>("/api/account/orders");
         if (!cancelled) setOrders(res.orders || []);
       } catch (err) {
         if (!cancelled) setError(errorMessage(err, t("errGeneric")));

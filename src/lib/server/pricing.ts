@@ -120,6 +120,46 @@ export function assertMinOrder(items: OrderItem[], settings: StoreSettings) {
   }
 }
 
+/** سطر سلة خام كما يصل من العميل (قبل قراءة الأسعار من قاعدة البيانات). */
+export interface RawOrderLine {
+  productId: string;
+  variantId?: string | null;
+  options?: Record<string, string>;
+  qty: number;
+}
+
+/**
+ * مفتاح توحيد البنود: نفس المنتج + نفس الحجم + نفس الخيارات = بند واحد.
+ * تُرتَّب مفاتيح الخيارات ليكون الترتيب غير مؤثّر.
+ */
+export function lineMergeKey(line: RawOrderLine): string {
+  const opts = Object.entries(line.options || {})
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([k, v]) => `${k}:${v}`)
+    .join(",");
+  return `${line.productId}|${line.variantId || ""}|${opts}`;
+}
+
+/**
+ * دمج البنود المتطابقة بجمع كمياتها (بحد أقصى 99 لكل بند).
+ *
+ * السبب: بند واحد بمخزون كافٍ قد يُقسَّم إلى بنود مكرّرة لتجاوز فحص المخزون
+ * (بيع أكثر من المتوفر)، أو لكتابة أكثر من `tx.update` على نفس المنتج فيضيع
+ * آخر خصم. الدمج قبل أي فحص أو خصم يمنع ذلك.
+ */
+export function mergeOrderLines(lines: RawOrderLine[]): RawOrderLine[] {
+  const map = new Map<string, RawOrderLine>();
+  for (const line of lines || []) {
+    const qty = Math.floor(Number(line?.qty));
+    if (!line?.productId || !Number.isInteger(qty) || qty < 1) continue;
+    const key = lineMergeKey(line);
+    const existing = map.get(key);
+    if (existing) existing.qty = Math.min(99, existing.qty + qty);
+    else map.set(key, { ...line, qty: Math.min(99, qty) });
+  }
+  return [...map.values()];
+}
+
 export function emptyOrder(): Order {
   const now = Date.now();
   return {

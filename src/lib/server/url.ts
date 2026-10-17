@@ -7,16 +7,22 @@ import { headers } from "next/headers";
  *
  * الأولوية:
  *  1. APP_URL / NEXT_PUBLIC_SITE_URL إن حُدِّد صراحةً (نطاق ثابت مثل https://store.com).
- *  2. مضيف الطلب الحالي (x-forwarded-host/host) — ليعمل الرابط تلقائيًا على
- *     النطاق العام، أو نفق مؤقّت، أو عنوان الشبكة المحلية.
- *  3. localhost كحل أخير.
- *
- * بهذا لا تُرسَل روابط بريد تشير إلى localhost عندما يدخل العميل من الإنترنت.
+ *  2. في الإنتاج: لا بديل — يُرمى خطأ واضح إن لم يُحدَّد (حماية من تسميم الروابط
+ *     عبر ترويسة Host: مهاجم يرسل Host مزيفًا فتُبنى روابط البريد على نطاقه).
+ *  3. في التطوير فقط: مضيف الطلب الحالي (x-forwarded-host/host) ثم localhost.
  */
 export async function publicBaseUrl(): Promise<string> {
   const configured =
     process.env.APP_URL || process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL;
   if (configured) return configured.replace(/\/+$/, "");
+
+  // الإنتاج: الترويسات غير موثوقة إطلاقًا لبناء روابط تُرسَل بالبريد
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "متغيّر البيئة APP_URL (أو NEXT_PUBLIC_SITE_URL) إلزامي في الإنتاج لبناء روابط البريد، " +
+        "ولا يُعتمد على ترويسة Host. أضفه إلى .env.local ثم أعد التشغيل."
+    );
+  }
 
   try {
     const h = await headers();
